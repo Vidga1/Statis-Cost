@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/use-auth';
 import { removeUser } from '../store/slices/userSlice';
 import { useAppDispatch } from '../hooks/redux-hooks';
+import './AuthPages.css'
 
 const HomePage = () => {
     const dispatch = useAppDispatch();
@@ -17,8 +18,13 @@ const HomePage = () => {
 
     return (
         <div>
-            <h1>Welcome</h1>
-            <button onClick={() => dispatch(removeUser())}>Log out from {email}</button>
+            <h1>Добро пожаловать!</h1>
+            <button 
+                className="logoutButton" 
+                onClick={() => dispatch(removeUser())}
+            >
+                Выйти из {email}
+            </button>
         </div>
     );
 };
