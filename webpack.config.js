@@ -26,11 +26,12 @@ module.exports = {
       ? 'hidden-source-map'
       : 'eval-source-map',
   devServer: {
+    historyApiFallback: true,
     static: path.join(__dirname, 'dist'),
     compress: true,
     port: 9000,
     hot: true,
-    // allowedHosts: "all",
+    /* allowedHosts: "all", */
   },
   plugins: [
     new HtmlWebpackPlugin({
