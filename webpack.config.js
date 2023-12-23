@@ -48,7 +48,7 @@ module.exports = {
     new MiniCssExtractPlugin({
       filename: '[name].[hash].css',
     }),
-    new FaviconsWebpackPlugin('src/public/favicon.png'),
+    new FaviconsWebpackPlugin('public/favicon.png'),
     new webpack.HotModuleReplacementPlugin(),
   ],
   module: {
