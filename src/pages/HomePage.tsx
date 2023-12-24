@@ -8,7 +8,7 @@ import './AuthPages.css'
 const HomePage = () => {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
-    const {isAuth, email} = useAuth();
+    const { isAuth, email } = useAuth();
 
     useEffect(() => {
         if (!isAuth) {
@@ -16,15 +16,22 @@ const HomePage = () => {
         }
     }, [isAuth, navigate]);
 
+    const handleLogout = () => {
+        dispatch(removeUser());
+        navigate('/login');
+    }
+
     return (
         <div>
             <h1>Добро пожаловать!</h1>
-            <button 
-                className="logoutButton" 
-                onClick={() => dispatch(removeUser())}
-            >
-                Выйти из {email}
-            </button>
+            {email && (
+                <button 
+                    className="logoutButton" 
+                    onClick={handleLogout}
+                >
+                    Выйти из {email}
+                </button>
+            )}
         </div>
     );
 };
