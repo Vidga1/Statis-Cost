@@ -4,6 +4,7 @@ import { useAuth } from '../hooks/use-auth';
 import { removeUser } from '../store/slices/userSlice';
 import { useAppDispatch } from '../hooks/redux-hooks';
 import './AuthPages.css'
+import CategoryManager from '../CategoryManager'; // Импортируем новый компонент
 
 const HomePage = () => {
     const dispatch = useAppDispatch();
@@ -23,15 +24,11 @@ const HomePage = () => {
 
     return (
         <div>
-            <h1>Добро пожаловать!</h1>
-            {email && (
-                <button 
-                    className="logoutButton" 
-                    onClick={handleLogout}
-                >
-                    Выйти из {email}
-                </button>
-            )}
+            <h1>Добро пожаловать, {email}!</h1>
+            <button className="logoutButton" onClick={handleLogout}>
+                Выйти
+            </button>
+            <CategoryManager /> {/* Использование компонента управления категориями */}
         </div>
     );
 };

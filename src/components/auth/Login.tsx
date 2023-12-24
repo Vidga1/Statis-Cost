@@ -2,8 +2,8 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import {Form} from './Form';
-import {setUser} from '../store/slices/userSlice';
-import { useAppDispatch } from '../hooks/redux-hooks';
+import {setUser} from '../../store/slices/userSlice';
+import { useAppDispatch } from '../../hooks/redux-hooks';
 
 const Login = () => {
     const dispatch = useAppDispatch();
@@ -15,7 +15,7 @@ const Login = () => {
             .then(({user}) => {
                 console.log(user);
                 dispatch(setUser({
-                    email: user.email,
+                    email: user.email || '',
                     id: user.uid,
                     token: user.refreshToken,
                 }));
