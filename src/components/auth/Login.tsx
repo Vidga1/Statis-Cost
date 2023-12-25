@@ -21,7 +21,7 @@ const Login = () => {
             token: user.refreshToken,
           }),
         );
-        navigate('/');
+        navigate('/settings');
       })
       .catch(() => alert('Invalid user!'));
   };

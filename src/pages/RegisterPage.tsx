@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { SignUp } from '../components/auth/SignUp';
-import { Link } from 'react-router-dom';
-import './AuthPages.css';
+import NavigationBar from '../components/nav/NavigationBar';
 
 const RegisterPage = () => {
     useEffect(() => {
@@ -15,17 +14,13 @@ const RegisterPage = () => {
         document.body.style.backgroundAttachment = 'fixed';
         document.body.style.backgroundPosition = 'center';
     
-
-    // При демонтировании компонента
     return () => {
       document.body.style.background = '';
     };
   }, []);
   return (
     <div>
-      <h1>
-        Зарегестрироваться или уже есть аккаунт? <Link to="/login">Войти</Link>{' '}
-      </h1>
+      <NavigationBar />
       <SignUp />
     </div>
   );

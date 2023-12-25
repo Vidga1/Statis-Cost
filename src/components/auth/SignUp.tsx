@@ -21,7 +21,7 @@ const SignUp = () => {
             token: user.refreshToken,
           }),
         );
-        navigate('/');
+        navigate('/settings');
       })
       .catch(console.error);
   };
