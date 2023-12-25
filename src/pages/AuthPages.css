@@ -1,36 +1,24 @@
-body {
-    margin: 0;
-    padding: 0;
-    overflow: hidden;  
-    min-height: 100vh;
-    background-image: url('https://catherineasquithgallery.com/uploads/posts/2021-02/1613586623_21-p-foni-dlya-finansovikh-prezentatsii-25.jpg');
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-position: center;
-}
-
 h1 {
-    margin-top: 30px;
-    margin-left: 30px;
+  margin-top: 30px;
+  margin-left: 30px;
 }
 
 .logoutButton {
-    margin-left: 30px;
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+  margin-left: 30px;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 .logoutButton:hover {
-    background-color: #0056b3;
+  background-color: #0056b3;
 }
 
 .logoutButton:active {
-    background-color: #0041a8;
+  background-color: #0041a8;
 }

@@ -12,7 +12,7 @@
   width: 20%; /* Увеличенная ширина */
   padding: 15px;
   margin-bottom: 20px;
-  border: 2px solid #007BFF;
+  border: 2px solid #007bff;
   border-radius: 8px;
   font-size: 16px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Добавлена тень */
@@ -26,7 +26,7 @@
 .formButton {
   width: 10%; /* Увеличенная ширина */
   padding: 15px;
-  background-color: #007BFF;
+  background-color: #007bff;
   color: white;
   border: none;
   border-radius: 8px;

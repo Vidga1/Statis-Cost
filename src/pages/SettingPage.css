@@ -1,0 +1,65 @@
+.SettingPage-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.SettingPage-header {
+  display: flex;
+  align-items: center;
+  width: auto;
+  padding: 10px 0;
+  font-size: 22px;
+}
+
+input,
+button {
+  padding: 10px;
+  margin: 5px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+}
+
+input {
+  width: 40%;
+  min-width: 200px;
+}
+
+button {
+  cursor: pointer;
+  background-color: #4caf50;
+  color: white;
+}
+
+button.logoutButton {
+  background-color: #f44336;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+.category-block {
+  border: 2px solid #bd1010;
+  padding: 10px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.category-name {
+  font-size: 25px;
+  font-weight: bold;
+  color: purple;
+  width: 100%;
+  text-align: center;
+}
+
+.subcategory-name {
+  font-size: 20px;
+  color: blue;
+  width: 100%;
+  text-align: center;
+}
