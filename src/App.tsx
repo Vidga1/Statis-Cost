@@ -1,5 +1,7 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
+import { CategoriesProvider } from './components/Category/CategoriesContext';
+import MainPage from './pages/MainPage';
 
 // Импортируйте новые страницы
 import HomePage from './pages/HomePage';
@@ -12,13 +14,16 @@ import RegisterPage from './pages/RegisterPage';
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<HomePage />} />
-      <Route path="/about" element={<AboutPage />} />
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/register" element={<RegisterPage />} />
-      <Route path="/settings" element={<SettingPage />} />
-    </Routes>
+    <CategoriesProvider>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/settings" element={<SettingPage />} />
+        <Route path="/main" element={<MainPage />} />
+      </Routes>
+    </CategoriesProvider>
   );
 }
 

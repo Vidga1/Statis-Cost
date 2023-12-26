@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/use-auth';
 import { removeUser } from '../store/slices/userSlice';
@@ -10,6 +10,7 @@ const SettingPage = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { isAuth, email } = useAuth();
+  const [hasCategories, setHasCategories] = useState(false);
 
   useEffect(() => {
     document.body.style.margin = '0';
@@ -32,6 +33,14 @@ const SettingPage = () => {
     navigate('/login');
   };
 
+  const handleBeginCalculation = () => {
+    navigate('/main');
+  };
+
+  const handleCategoriesChange = (hasCategories: boolean | ((prevState: boolean) => boolean)) => {
+    setHasCategories(hasCategories);
+  };
+
   return (
     <div className="SettingPage-container">
       <div className="SettingPage-header">
@@ -40,7 +49,12 @@ const SettingPage = () => {
           Выйти
         </button>
       </div>
-      <CategoryManager />
+      <CategoryManager onCategoriesChange={handleCategoriesChange} />
+      {hasCategories && (
+        <button className="beginCalculationButton" onClick={handleBeginCalculation}>
+          Начать расчёт
+        </button>
+      )}
     </div>
   );
 };

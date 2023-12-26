@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import CategoryForm from './CategoryForm';
 import SubcategoryList from './SubcategoryList';
 
@@ -13,9 +13,17 @@ interface Category {
   subcategories: Subcategory[];
 }
 
-const CategoryManager: React.FC = () => {
+interface CategoryManagerProps {
+  onCategoriesChange: (hasCategories: boolean) => void;
+}
+
+const CategoryManager: React.FC<CategoryManagerProps> = ({ onCategoriesChange }) => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
+
+  useEffect(() => {
+    onCategoriesChange(categories.length > 0);
+  }, [categories, onCategoriesChange]);
 
   const handleAddCategory = (categoryName: string) => {
     setCategories([
@@ -45,7 +53,7 @@ const CategoryManager: React.FC = () => {
   ) => {
     setCategories(
       categories.map((cat) => {
-        if (cat.id === categoryId && cat.subcategories.length < 5) {
+        if (cat.id === categoryId) {
           return {
             ...cat,
             subcategories: [
