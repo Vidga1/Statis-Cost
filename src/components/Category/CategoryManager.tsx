@@ -17,7 +17,9 @@ interface CategoryManagerProps {
   onCategoriesChange: (hasCategories: boolean) => void;
 }
 
-const CategoryManager: React.FC<CategoryManagerProps> = ({ onCategoriesChange }) => {
+const CategoryManager: React.FC<CategoryManagerProps> = ({
+  onCategoriesChange,
+}) => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
 

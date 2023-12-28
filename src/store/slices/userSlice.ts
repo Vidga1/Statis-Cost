@@ -1,4 +1,6 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
+import { firestore } from '../../firebase/firebase'; // Импорт firestore
+import { doc, setDoc, deleteDoc } from 'firebase/firestore';
 
 interface UserState {
   email: string | null;
@@ -12,6 +14,22 @@ const initialState: UserState = {
   id: null,
 };
 
+export const saveUserToFirestore = createAsyncThunk(
+  'user/saveToFirestore',
+  async (userData: { email: string; token: string; id: string }) => {
+    const userRef = doc(firestore, 'users', userData.id);
+    await setDoc(userRef, userData);
+  },
+);
+
+export const removeUserFromFirestore = createAsyncThunk(
+  'user/removeFromFirestore',
+  async (userId: string) => {
+    const userRef = doc(firestore, 'users', userId);
+    await deleteDoc(userRef);
+  },
+);
+
 const userSlice = createSlice({
   name: 'user',
   initialState,
@@ -23,18 +41,21 @@ const userSlice = createSlice({
       state.email = action.payload.email;
       state.token = action.payload.token;
       state.id = action.payload.id;
-      // Сохраняем токен и email в локальное хранилище
-      localStorage.setItem('authToken', action.payload.token);
-      localStorage.setItem('userEmail', action.payload.email);
     },
     removeUser(state) {
       state.email = null;
       state.token = null;
       state.id = null;
-      // Удаляем токен и email из локального хранилища
-      localStorage.removeItem('authToken');
-      localStorage.removeItem('userEmail');
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(saveUserToFirestore.fulfilled, (state, action) => {
+        console.log('Пользователь успешно сохранен в Firestore');
+      })
+      .addCase(removeUserFromFirestore.fulfilled, (state, action) => {
+        console.log('Пользователь успешно удален из Firestore');
+      });
   },
 });
 

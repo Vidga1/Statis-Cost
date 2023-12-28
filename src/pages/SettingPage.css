@@ -48,10 +48,9 @@ label {
 .category-block {
   border: 2px solid #bd1010;
   padding: 10px;
-  margin-bottom: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  margin-top: 10px;
+  margin-bottom: 5px;
+  text-align: center; 
   background-image: linear-gradient(to right, #ddffbc, #04befe);
 }
 
@@ -72,21 +71,24 @@ label {
 
 .beginCalculationButton {
   padding: 10px 20px;
-  background-color: #4CAF50; /* Зеленый цвет фона */
+  margin-left: 170px;
+  background-color: #4caf50; 
   color: white;
   border: none;
   border-radius: 5px;
   font-size: 16px;
   cursor: pointer;
-  margin-top: 20px;
-  transition: background-color 0.3s, transform 0.2s;
+  margin-top: 10px;
+  transition:
+    background-color 0.3s,
+    transform 0.2s;
 }
 
 .beginCalculationButton:hover {
-  background-color: #45a049; /* Темно-зеленый цвет при наведении */
-  transform: translateY(-2px); /* Небольшой эффект "поднятия" при наведении */
+  background-color: #45a049; 
+  transform: translateY(-2px); 
 }
 
 .beginCalculationButton:active {
-  transform: translateY(1px); /* Эффект при нажатии */
+  transform: translateY(1px); 
 }

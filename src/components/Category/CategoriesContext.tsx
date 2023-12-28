@@ -21,7 +21,8 @@ const defaultState: CategoriesContextType = {
   setCategories: () => {},
 };
 
-export const CategoriesContext = createContext<CategoriesContextType>(defaultState);
+export const CategoriesContext =
+  createContext<CategoriesContextType>(defaultState);
 
 export const useCategoriesContext = () => useContext(CategoriesContext);
 
@@ -29,7 +30,9 @@ interface CategoriesProviderProps {
   children: ReactNode;
 }
 
-export const CategoriesProvider: React.FC<CategoriesProviderProps> = ({ children }) => {
+export const CategoriesProvider: React.FC<CategoriesProviderProps> = ({
+  children,
+}) => {
   const [categories, setCategories] = useState<Category[]>([]);
 
   return (

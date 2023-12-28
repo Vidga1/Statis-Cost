@@ -1,24 +1,24 @@
 .navbar {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    background-color: #012f5c; /* Обновленный цвет фона */
-    padding: 15px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Добавление тени */
-  }
-  
-  .nav-link {
-    color: #ecf0f1; /* Немного светлее белого для лучшего контраста */
-    text-decoration: none;
-    padding: 8px 15px;
-    border-radius: 5px;
-    transition: all 0.3s ease-in-out; /* Плавный переход всех свойств */
-    font-weight: 500; /* Немного жирнее шрифт */
-    font-size: 24px; /* Увеличение размера шрифта */
-  }
-  
-  .nav-link:hover {
-    background-color: #093e74; /* Темно-синий цвет для эффекта при наведении */
-    color: #f1c40f; /* Изменение цвета текста при наведении */
-    transform: scale(1.05); /* Небольшое увеличение при наведении */
-  }
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background-color: #012f5c; /* Обновленный цвет фона */
+  padding: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Добавление тени */
+}
+
+.nav-link {
+  color: #ecf0f1; /* Немного светлее белого для лучшего контраста */
+  text-decoration: none;
+  padding: 8px 15px;
+  border-radius: 5px;
+  transition: all 0.3s ease-in-out; /* Плавный переход всех свойств */
+  font-weight: 500; /* Немного жирнее шрифт */
+  font-size: 24px; /* Увеличение размера шрифта */
+}
+
+.nav-link:hover {
+  background-color: #093e74; /* Темно-синий цвет для эффекта при наведении */
+  color: #f1c40f; /* Изменение цвета текста при наведении */
+  transform: scale(1.05); /* Небольшое увеличение при наведении */
+}
