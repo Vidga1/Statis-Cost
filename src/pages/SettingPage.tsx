@@ -12,22 +12,6 @@ const SettingPage = () => {
   const { isAuth, email } = useAuth();
   const [hasCategories, setHasCategories] = useState(false);
 
-  useEffect(() => {
-    document.body.style.margin = '0';
-    document.body.style.padding = '0';
-    document.body.style.background =
-      'linear-gradient(to right, #a6c0fe, #f68084)';
-    document.body.style.color = '#333';
-    document.body.style.fontFamily = "'Arial', sans-serif";
-
-    if (!isAuth) {
-      navigate('/login');
-    }
-    return () => {
-      document.body.style.background = '';
-    };
-  }, [isAuth, navigate]);
-
   const handleLogout = () => {
     dispatch(removeUser());
     navigate('/login');
