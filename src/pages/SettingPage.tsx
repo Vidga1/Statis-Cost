@@ -13,11 +13,11 @@ const SettingPage = () => {
   const navigate = useNavigate();
   const { isAuth, email, id } = useAuth();
   const [hasCategories, setHasCategories] = useState(false);
-  const [isLoading, setIsLoading] = useState(true); 
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (isAuth && id) {
-      setIsLoading(true); 
+      setIsLoading(true);
       const userRef = doc(firestore, 'users', id);
       getDoc(userRef)
         .then((docSnap) => {
@@ -31,11 +31,11 @@ const SettingPage = () => {
               }),
             );
           }
-          setIsLoading(false); 
+          setIsLoading(false);
         })
         .catch((error) => {
           console.error('Ошибка при загрузке данных пользователя: ', error);
-          setIsLoading(false); 
+          setIsLoading(false);
         });
     } else {
       setIsLoading(false);
@@ -51,22 +51,26 @@ const SettingPage = () => {
     navigate('/main');
   };
 
-  const handleCategoriesChange = (
-    hasCategories: boolean | ((prevState: boolean) => boolean),
-  ) => {
+  const handleCategoriesChange = (hasCategories: boolean) => {
     setHasCategories(hasCategories);
   };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="SettingPage-container">
         <div>
           <div className="SettingPage-header">
-            <h1>Добро пожаловать!</h1>
+            <h1>Добро пожаловать, {email}!</h1>
             <button className="logoutButton" onClick={handleLogout}>
               Выйти
             </button>
           </div>
-          <CategoryManager onCategoriesChange={handleCategoriesChange} />
+          {isAuth && id && (
+            <CategoryManager userId={id} onCategoriesChange={handleCategoriesChange} />
+          )}
           {hasCategories && (
             <button
               className="beginCalculationButton"

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import CategoryForm from './CategoryForm';
 import SubcategoryList from './SubcategoryList';
+import { loadUserCategories, saveUserCategories } from '../../firebase/firebaseService';
 
 interface Subcategory {
   id: number;
@@ -14,99 +15,103 @@ interface Category {
 }
 
 interface CategoryManagerProps {
+  userId: string;
   onCategoriesChange: (hasCategories: boolean) => void;
 }
 
 const CategoryManager: React.FC<CategoryManagerProps> = ({
+  userId,
   onCategoriesChange,
 }) => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
 
   useEffect(() => {
-    onCategoriesChange(categories.length > 0);
-  }, [categories, onCategoriesChange]);
+    const fetchCategories = async () => {
+      const loadedCategories = await loadUserCategories(userId);
+      if (loadedCategories) {
+        setCategories(loadedCategories);
+        onCategoriesChange(loadedCategories.length > 0);
+      }
+    };
+
+    fetchCategories();
+  }, [userId, onCategoriesChange]);
+
+  useEffect(() => {
+    saveUserCategories(userId, categories).catch(error => {
+      console.error('Ошибка при сохранении категорий:', error);
+    });
+  }, [categories, userId]);
 
   const handleAddCategory = (categoryName: string) => {
-    setCategories([
-      ...categories,
-      { id: Date.now(), name: categoryName, subcategories: [] },
-    ]);
+    const newCategory: Category = {
+      id: Date.now(),
+      name: categoryName,
+      subcategories: []
+    };
+    setCategories(prev => [...prev, newCategory]);
   };
 
   const handleEditCategory = (categoryName: string) => {
     if (editingCategory) {
-      setCategories(
-        categories.map((cat) =>
-          cat.id === editingCategory.id ? { ...cat, name: categoryName } : cat,
-        ),
+      setCategories(prev =>
+        prev.map(cat =>
+          cat.id === editingCategory.id ? { ...cat, name: categoryName } : cat
+        )
       );
       setEditingCategory(null);
     }
   };
 
   const handleDeleteCategory = (categoryId: number) => {
-    setCategories(categories.filter((cat) => cat.id !== categoryId));
+    setCategories(prev => prev.filter(cat => cat.id !== categoryId));
   };
 
-  const handleAddSubcategory = (
-    categoryId: number,
-    subcategoryName: string,
-  ) => {
-    setCategories(
-      categories.map((cat) => {
+  const handleAddSubcategory = (categoryId: number, subcategoryName: string) => {
+    setCategories(prev =>
+      prev.map(cat => {
         if (cat.id === categoryId) {
           return {
             ...cat,
             subcategories: [
               ...cat.subcategories,
-              { id: Date.now(), name: subcategoryName },
-            ],
+              { id: Date.now(), name: subcategoryName }
+            ]
           };
         }
         return cat;
-      }),
+      })
     );
   };
 
-  const handleEditSubcategory = (
-    categoryId: number,
-    subcategoryId: number,
-    newName: string,
-  ) => {
-    setCategories(
-      categories.map((category) => {
+  const handleEditSubcategory = (categoryId: number, subcategoryId: number, newName: string) => {
+    setCategories(prev =>
+      prev.map(category => {
         if (category.id === categoryId) {
           return {
             ...category,
-            subcategories: category.subcategories.map((subcat) =>
-              subcat.id === subcategoryId
-                ? { ...subcat, name: newName }
-                : subcat,
-            ),
+            subcategories: category.subcategories.map(subcat =>
+              subcat.id === subcategoryId ? { ...subcat, name: newName } : subcat
+            )
           };
         }
         return category;
-      }),
+      })
     );
   };
 
-  const handleDeleteSubcategory = (
-    categoryId: number,
-    subcategoryId: number,
-  ) => {
-    setCategories(
-      categories.map((category) => {
+  const handleDeleteSubcategory = (categoryId: number, subcategoryId: number) => {
+    setCategories(prev =>
+      prev.map(category => {
         if (category.id === categoryId) {
           return {
             ...category,
-            subcategories: category.subcategories.filter(
-              (subcat) => subcat.id !== subcategoryId,
-            ),
+            subcategories: category.subcategories.filter(subcat => subcat.id !== subcategoryId)
           };
         }
         return category;
-      }),
+      })
     );
   };
 
