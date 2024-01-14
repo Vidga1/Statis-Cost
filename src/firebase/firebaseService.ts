@@ -7,18 +7,18 @@ interface UserData {
   id: string;
 }
 
+interface Subcategory {
+  id: number;
+  name: string;
+}
+
 interface Category {
   id: number;
   name: string;
   subcategories: Subcategory[];
 }
 
-interface Subcategory {
-  id: number;
-  name: string;
-}
-
-export const saveUserData = async (userData: UserData) => {
+export const saveUserData = async (userData: UserData): Promise<void> => {
   try {
     const userRef = doc(firestore, 'users', userData.id);
     await setDoc(userRef, userData);
@@ -28,7 +28,7 @@ export const saveUserData = async (userData: UserData) => {
   }
 };
 
-export const saveUserCategories = async (userId: string, categories: Category[]) => {
+export const saveUserCategories = async (userId: string, categories: Category[]): Promise<void> => {
   try {
     const categoriesRef = doc(firestore, 'userCategories', userId);
     await setDoc(categoriesRef, { categories });
