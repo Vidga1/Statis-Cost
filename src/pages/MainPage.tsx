@@ -1,44 +1,46 @@
-import React, { useState } from 'react';
-import { useCategoriesContext } from '../components/Category/CategoriesContext';
+import React, { useEffect, useState } from 'react';
+import { useAuth } from '../hooks/use-auth';
+import { useAppSelector, useAppDispatch } from '../hooks/redux-hooks';
+import { loadUserCategories, Category as FirebaseCategory } from '../firebase/firebaseService';
+import { setCategoriesForUser } from '../store/slices/categoriesSlice';
 
-const MainPage = () => {
-  const { categories } = useCategoriesContext();
-  const [expense, setExpense] = useState<{ [key: string]: string }>({});
-  const [date, setDate] = useState<string>('');
+interface Subcategory {
+  id: number;
+  name: string;
+}
 
-  const handleExpenseChange = (categoryId: number, value: string) => {
-    setExpense({ ...expense, [categoryId]: value });
-  };
+interface Category {
+  id: number;
+  name: string;
+  subcategories: Subcategory[];
+}
 
-  const handleSubmit = () => {
-    console.log('Расходы:', expense, 'Дата:', date);
-    // Логика отправки данных
-  };
+const MainPage: React.FC = () => {
+  const { id } = useAuth();
+  const dispatch = useAppDispatch();
+  const categories = useAppSelector((state) => state.categories.categoriesByUserId[id || ''] || []);
+
+  useEffect(() => {
+    if (id) {
+      const fetchCategories = async () => {
+        const loadedCategories = await loadUserCategories(id);
+        dispatch(setCategoriesForUser({ userId: id, categories: loadedCategories as FirebaseCategory[] }));
+      };
+
+      fetchCategories();
+    }
+  }, [id, dispatch]);
 
   return (
     <div>
-      <h1>Ввод расходов</h1>
-      {categories.map((category) => (
+      {categories.map((category: Category) => (
         <div key={category.id}>
-          <strong>{category.name}</strong>
-          {category.subcategories.map((subcat) => (
-            <div key={subcat.id}>
-              {subcat.name}
-              <input
-                type="number"
-                placeholder="Сумма"
-                onChange={(e) => handleExpenseChange(subcat.id, e.target.value)}
-              />
-            </div>
+          <h3>{category.name}</h3>
+          {category.subcategories.map((subcategory: Subcategory) => (
+            <p key={subcategory.id}>{subcategory.name}</p>
           ))}
         </div>
       ))}
-      <input
-        type="date"
-        value={date}
-        onChange={(e) => setDate(e.target.value)}
-      />
-      <button onClick={handleSubmit}>Сохранить расходы</button>
     </div>
   );
 };
