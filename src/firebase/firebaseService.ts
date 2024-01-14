@@ -28,7 +28,10 @@ export const saveUserData = async (userData: UserData): Promise<void> => {
   }
 };
 
-export const saveUserCategories = async (userId: string, categories: Category[]): Promise<void> => {
+export const saveUserCategories = async (
+  userId: string,
+  categories: Category[],
+): Promise<void> => {
   try {
     const categoriesRef = doc(firestore, 'userCategories', userId);
     await setDoc(categoriesRef, { categories });
@@ -38,7 +41,9 @@ export const saveUserCategories = async (userId: string, categories: Category[])
   }
 };
 
-export const loadUserCategories = async (userId: string): Promise<Category[] | null> => {
+export const loadUserCategories = async (
+  userId: string,
+): Promise<Category[] | null> => {
   try {
     const categoriesRef = doc(firestore, 'userCategories', userId);
     const docSnap = await getDoc(categoriesRef);

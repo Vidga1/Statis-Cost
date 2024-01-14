@@ -50,7 +50,7 @@ label {
   padding: 10px;
   margin-top: 10px;
   margin-bottom: 5px;
-  text-align: center; 
+  text-align: center;
   background-image: linear-gradient(to right, #ddffbc, #04befe);
 }
 
@@ -72,7 +72,7 @@ label {
 .beginCalculationButton {
   padding: 10px 20px;
   margin-left: 170px;
-  background-color: #4caf50; 
+  background-color: #4caf50;
   color: white;
   border: none;
   border-radius: 5px;
@@ -85,10 +85,10 @@ label {
 }
 
 .beginCalculationButton:hover {
-  background-color: #45a049; 
-  transform: translateY(-2px); 
+  background-color: #45a049;
+  transform: translateY(-2px);
 }
 
 .beginCalculationButton:active {
-  transform: translateY(1px); 
+  transform: translateY(1px);
 }

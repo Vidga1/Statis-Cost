@@ -35,7 +35,10 @@ const SettingPage = () => {
           </button>
         </div>
         {isAuth && id && (
-          <CategoryManager userId={id} onCategoriesChange={handleCategoriesChange} />
+          <CategoryManager
+            userId={id}
+            onCategoriesChange={handleCategoriesChange}
+          />
         )}
         {hasCategories && (
           <button
