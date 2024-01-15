@@ -11,8 +11,8 @@
   border: 2px solid #6e7efc;
   border-radius: 10px;
   padding: 15px;
-  margin: 10px 0;
-  width: 55%;
+  margin-bottom: 10px;
+  width: 45%;
   background-image: linear-gradient(to right, #ddffbc, #04befe);
   color: white;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -21,37 +21,60 @@
   align-items: flex-start;
 }
 
-.category-header,
+.category-header {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.category-header .category-name {
+  margin-right: 10px;
+}
+
+.category-input {
+  padding: 5px;
+  width: 50px;
+  margin-right: 10px;
+}
+
 .subcategory-container {
   display: flex;
   align-items: center;
+  margin-bottom: 10px;
 }
 
-.input-container {
-  display: flex;
-  align-items: center;
-}
-
-.category-header .category-name,
 .subcategory-container .subcategory-name {
   margin-right: 10px;
 }
 
-.category-input,
 .subcategory-input {
   padding: 5px;
-  width: 50px; 
+  width: 50px;
+  margin-right: 10px;
+}
+
+.date-picker-container {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+}
+
+.date-picker {
+  margin-right: 10px;
 }
 
 .category-header button {
   margin-left: 10px;
 }
 
-.date-picker {
-  margin-left: 300px;
-}
-
 .expense-records {
   margin-top: 20px;
-  width: 60%;
+  width: 50%;
+  align-self: center;
+}
+
+.total-expense {
+  color: black;
+  font-size: 18px;
 }

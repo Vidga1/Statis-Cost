@@ -59,6 +59,7 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({
   const updateCategories = (newCategories: Category[]) => {
     setCategories(newCategories);
     saveUserCategories(userId, newCategories); // Сохраняем изменения
+    onCategoriesChange(newCategories.length > 0); // Обновляем состояние в SettingPage
   };
 
   // Обработчики действий с категориями и подкатегориями
