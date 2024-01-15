@@ -6,6 +6,8 @@ import { useAppSelector, useAppDispatch } from '../hooks/redux-hooks';
 import {
   loadUserCategories,
   Category as FirebaseCategory,
+  loadUserExpenses,
+  saveUserExpenses,
 } from '../firebase/firebaseService';
 import { setCategoriesForUser } from '../store/slices/categoriesSlice';
 import './MainPage.css';
@@ -54,19 +56,29 @@ const MainPage: React.FC = () => {
   const [expenseRecords, setExpenseRecords] = useState<ExpenseRecord[]>([]);
 
   useEffect(() => {
-    if (id) {
-      const fetchCategories = async () => {
+    const fetchData = async () => {
+      if (id) {
         const loadedCategories = await loadUserCategories(id);
+        const loadedExpenses = await loadUserExpenses(id);
         dispatch(
           setCategoriesForUser({
             userId: id,
             categories: loadedCategories as FirebaseCategory[],
           }),
         );
-      };
-      fetchCategories();
-    }
+        if (loadedExpenses) {
+          setExpenseRecords(loadedExpenses);
+        }
+      }
+    };
+    fetchData();
   }, [id, dispatch]);
+
+  useEffect(() => {
+    if (id && expenseRecords.length > 0) {
+      saveUserExpenses(id, expenseRecords);
+    }
+  }, [expenseRecords, id]);
 
   const handleExpenseChange = (categoryId: number, value: string) => {
     setCategoryExpenses({ ...categoryExpenses, [categoryId]: Number(value) });
@@ -160,7 +172,7 @@ const MainPage: React.FC = () => {
             .map((record, index) => (
               <div key={index} className="total-expense">
                 Сумма расходов{' '}
-                {record.date.toLocaleDateString('ru-RU', {
+                {new Date(record.date).toLocaleDateString('ru-RU', {
                   day: 'numeric',
                   month: 'long',
                   year: 'numeric',
