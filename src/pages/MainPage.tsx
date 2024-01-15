@@ -3,10 +3,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useAuth } from '../hooks/use-auth';
 import { useAppSelector, useAppDispatch } from '../hooks/redux-hooks';
-import {
-  loadUserCategories,
-  Category as FirebaseCategory,
-} from '../firebase/firebaseService';
+import { loadUserCategories, Category as FirebaseCategory } from '../firebase/firebaseService';
 import { setCategoriesForUser } from '../store/slices/categoriesSlice';
 import './MainPage.css';
 
@@ -33,32 +30,26 @@ interface CategoryDates {
   [categoryId: string]: Date | null;
 }
 
+interface ExpenseRecord {
+  categoryId: number;
+  date: Date;
+  totalExpense: number;
+}
+
 const MainPage: React.FC = () => {
   const { id } = useAuth();
   const dispatch = useAppDispatch();
-  const categories = useAppSelector(
-    (state) => state.categories.categoriesByUserId[id || ''] || [],
-  );
-  const [categoryExpenses, setCategoryExpenses] = useState<CategoryExpenses>(
-    {},
-  );
-  const [subcategoryExpenses, setSubcategoryExpenses] =
-    useState<SubcategoryExpenses>({});
+  const categories = useAppSelector(state => state.categories.categoriesByUserId[id || ''] || []);
+  const [categoryExpenses, setCategoryExpenses] = useState<CategoryExpenses>({});
+  const [subcategoryExpenses, setSubcategoryExpenses] = useState<SubcategoryExpenses>({});
   const [categoryDates, setCategoryDates] = useState<CategoryDates>({});
-  const [totalExpenseByCategory, setTotalExpenseByCategory] = useState<{
-    [key: string]: number;
-  }>({});
+  const [expenseRecords, setExpenseRecords] = useState<ExpenseRecord[]>([]);
 
   useEffect(() => {
     if (id) {
       const fetchCategories = async () => {
         const loadedCategories = await loadUserCategories(id);
-        dispatch(
-          setCategoriesForUser({
-            userId: id,
-            categories: loadedCategories as FirebaseCategory[],
-          }),
-        );
+        dispatch(setCategoriesForUser({ userId: id, categories: loadedCategories as FirebaseCategory[] }));
       };
       fetchCategories();
     }
@@ -79,7 +70,7 @@ const MainPage: React.FC = () => {
   const calculateTotalExpense = (categoryId: number) => {
     const categoryExpense = categoryExpenses[categoryId] || 0;
     const subcategoryExpense = Object.keys(subcategoryExpenses)
-      .filter((key) => key.startsWith(`${categoryId}-`))
+      .filter(key => key.startsWith(`${categoryId}-`))
       .reduce((sum, key) => sum + subcategoryExpenses[key], 0);
 
     return categoryExpense + subcategoryExpense;
@@ -89,16 +80,13 @@ const MainPage: React.FC = () => {
     const date = categoryDates[categoryId];
     const totalExpense = calculateTotalExpense(categoryId);
     if (date) {
-      setTotalExpenseByCategory({
-        ...totalExpenseByCategory,
-        [categoryId]: totalExpense,
-      });
+      setExpenseRecords([...expenseRecords, { categoryId, date, totalExpense }]);
     }
   };
 
   return (
     <div className="main-container">
-      {categories.map((category) => (
+      {categories.map(category => (
         <div key={category.id} className="category-container">
           <div className="category-header">
             <span className="category-name">{category.name}</span>
@@ -107,15 +95,13 @@ const MainPage: React.FC = () => {
                 type="number"
                 className="category-input"
                 value={categoryExpenses[category.id] || ''}
-                onChange={(e) =>
-                  handleExpenseChange(category.id, e.target.value)
-                }
+                onChange={e => handleExpenseChange(category.id, e.target.value)}
               />
             )}
             <div className="date-picker-container">
               <DatePicker
                 selected={categoryDates[category.id]}
-                onChange={(date) => handleDateChange(category.id, date)}
+                onChange={date => handleDateChange(category.id, date)}
                 className="date-picker"
                 placeholderText="Выберите дату"
               />
@@ -124,38 +110,32 @@ const MainPage: React.FC = () => {
               )}
             </div>
           </div>
-          {category.subcategories.map((subcategory) => (
+          {category.subcategories.map(subcategory => (
             <div key={subcategory.id} className="subcategory-container">
               <span className="subcategory-name">{subcategory.name}</span>
               {categoryDates[category.id] && (
                 <input
                   type="number"
                   className="subcategory-input"
-                  value={
-                    subcategoryExpenses[`${category.id}-${subcategory.id}`] ||
-                    ''
-                  }
-                  onChange={(e) =>
-                    handleSubcategoryExpenseChange(
-                      `${category.id}-${subcategory.id}`,
-                      e.target.value,
-                    )
-                  }
+                  value={subcategoryExpenses[`${category.id}-${subcategory.id}`] || ''}
+                  onChange={e => handleSubcategoryExpenseChange(`${category.id}-${subcategory.id}`, e.target.value)}
                 />
               )}
             </div>
           ))}
-          {totalExpenseByCategory[category.id] && (
-            <div className="total-expense">
-              Сумма расходов за{' '}
-              {categoryDates[category.id]?.toLocaleDateString('ru-RU', {
-                day: 'numeric',
-                month: 'long',
-                year: 'numeric',
-              })}{' '}
-              составляет {totalExpenseByCategory[category.id]} рублей.
-            </div>
-          )}
+          {expenseRecords
+            .filter(record => record.categoryId === category.id)
+            .map((record, index) => (
+              <div key={index} className="total-expense">
+                Сумма расходов {' '}
+                {record.date.toLocaleDateString('ru-RU', {
+                  day: 'numeric',
+                  month: 'long',
+                  year: 'numeric',
+                })}{' '}
+                составляет {record.totalExpense} рублей.
+              </div>
+            ))}
         </div>
       ))}
     </div>
