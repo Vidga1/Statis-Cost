@@ -4,13 +4,7 @@ import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { Form } from './Form';
 import { setUser } from '../../store/slices/userSlice';
 import { useAppDispatch } from '../../hooks/redux-hooks';
-import { saveUserData } from '../../firebase/firebaseService'; // Импорт функции saveUserData
-
-interface UserData {
-  email: string;
-  token: string;
-  id: string;
-}
+import { saveUserData } from '../../firebase/firebaseService';
 
 const SignUp: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -26,7 +20,7 @@ const SignUp: React.FC = () => {
           token: user.refreshToken,
         };
         dispatch(setUser(userData));
-        saveUserData(userData); // Сохранение данных пользователя в Firestore
+        saveUserData(userData);
         navigate('/settings');
       })
       .catch(console.error);

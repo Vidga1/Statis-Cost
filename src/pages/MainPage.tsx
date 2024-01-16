@@ -13,43 +13,8 @@ import {
 import { setCategoriesForUser } from '../store/slices/categoriesSlice';
 import './MainPage.css';
 import { v4 as uuidv4 } from 'uuid';
-
-interface Subcategory {
-  id: number;
-  name: string;
-}
-
-interface Category {
-  id: number;
-  name: string;
-  subcategories: Subcategory[];
-}
-
-interface CategoryExpenses {
-  [categoryId: string]: number;
-}
-
-interface SubcategoryExpenses {
-  [key: string]: number;
-}
-
-interface CategoryDates {
-  [categoryId: string]: Date | null;
-}
-
-interface ExpenseRecord {
-  id: string;
-  categoryId: number;
-  date: Date;
-  totalExpense: number;
-}
-
-interface IncomeRecord {
-  id: string;
-  categoryId: number;
-  date: Date;
-  totalIncome: number;
-}
+import ExpenseItem from '../components/cost/ExpenseItem';
+import IncomeItem from '../components/cost/IncomeItem';
 
 const MainPage: React.FC = () => {
   const { id } = useAuth();
@@ -84,7 +49,7 @@ const MainPage: React.FC = () => {
         if (loadedExpenses) {
           const expensesWithId = loadedExpenses.map((expense) => ({
             ...expense,
-            id: uuidv4(), // Добавление уникального ID
+            id: uuidv4(),
           }));
           setExpenseRecords(expensesWithId);
         }
@@ -92,7 +57,7 @@ const MainPage: React.FC = () => {
         if (loadedIncomes) {
           const incomesWithId = loadedIncomes.map((income) => ({
             ...income,
-            id: uuidv4(), // Добавление уникального ID
+            id: uuidv4(),
           }));
           setIncomeRecords(incomesWithId);
         }
@@ -183,7 +148,7 @@ const MainPage: React.FC = () => {
       (record) => record.id !== recordId,
     );
     setIncomeRecords(updatedRecords);
-    saveUserIncomes(id!, updatedRecords); // Обновление данных в Firestore
+    saveUserIncomes(id!, updatedRecords);
   };
 
   const handleRemoveExpense = (recordId: string) => {
@@ -191,7 +156,7 @@ const MainPage: React.FC = () => {
       (record) => record.id !== recordId,
     );
     setExpenseRecords(updatedRecords);
-    saveUserExpenses(id!, updatedRecords); // Обновление данных в Firestore
+    saveUserExpenses(id!, updatedRecords);
   };
 
   return (
@@ -257,32 +222,20 @@ const MainPage: React.FC = () => {
           {expenseRecords
             .filter((record) => record.categoryId === category.id)
             .map((record) => (
-              <div key={record.id} className="total-expense">
-                Сумма расходов{' '}
-                {new Date(record.date).toLocaleDateString('ru-RU')} составляет{' '}
-                {record.totalExpense} рублей.
-                <button
-                  onClick={() => handleRemoveExpense(record.id)}
-                  className="remove-button"
-                >
-                  x
-                </button>
-              </div>
+              <ExpenseItem
+                key={record.id}
+                record={record}
+                onRemove={handleRemoveExpense}
+              />
             ))}
           {incomeRecords
             .filter((record) => record.categoryId === category.id)
             .map((record) => (
-              <div key={record.id} className="total-income">
-                Сумма доходов{' '}
-                {new Date(record.date).toLocaleDateString('ru-RU')} составляет{' '}
-                {record.totalIncome} рублей.
-                <button
-                  onClick={() => handleRemoveIncome(record.id)}
-                  className="remove-button"
-                >
-                  x
-                </button>
-              </div>
+              <IncomeItem
+                key={record.id}
+                record={record}
+                onRemove={handleRemoveIncome}
+              />
             ))}
         </div>
       ))}

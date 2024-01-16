@@ -1,17 +1,5 @@
 import React, { useState } from 'react';
 
-interface Subcategory {
-  id: number;
-  name: string;
-}
-
-interface SubcategoryListProps {
-  subcategories: Subcategory[];
-  onAddSubcategory: (subcategoryName: string) => void;
-  onEditSubcategory: (subcategoryId: number, newName: string) => void;
-  onDeleteSubcategory: (subcategoryId: number) => void;
-}
-
 const SubcategoryList: React.FC<SubcategoryListProps> = ({
   subcategories,
   onAddSubcategory,

@@ -1,13 +1,10 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-import { CategoriesProvider } from './components/Category/CategoriesContext';
+import { CategoriesProvider } from './components/category/CategoriesContext';
 import MainPage from './pages/MainPage';
 
-// Импортируйте новые страницы
 import HomePage from './pages/HomePage';
 import AboutPage from './pages/AboutPage';
-
-// Импортируйте уже существующие страницы
 import SettingPage from './pages/SettingPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';

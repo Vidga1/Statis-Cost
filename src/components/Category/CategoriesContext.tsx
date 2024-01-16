@@ -1,21 +1,5 @@
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 
-interface Subcategory {
-  id: number;
-  name: string;
-}
-
-interface Category {
-  id: number;
-  name: string;
-  subcategories: Subcategory[];
-}
-
-interface CategoriesContextType {
-  categories: Category[];
-  setCategories: React.Dispatch<React.SetStateAction<Category[]>>;
-}
-
 const defaultState: CategoriesContextType = {
   categories: [],
   setCategories: () => {},

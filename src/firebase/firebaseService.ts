@@ -1,37 +1,6 @@
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { firestore } from './firebase';
 
-// Определение интерфейсов
-interface UserData {
-  email: string;
-  token: string;
-  id: string;
-}
-
-interface Subcategory {
-  id: number;
-  name: string;
-}
-
-export interface Category {
-  id: number;
-  name: string;
-  subcategories: Subcategory[];
-}
-
-interface ExpenseRecord {
-  categoryId: number;
-  date: Date; // Теперь date всегда объект Date
-  totalExpense: number;
-}
-
-interface IncomeRecord {
-  categoryId: number;
-  date: Date;
-  totalIncome: number;
-}
-
-// Функции для работы с данными пользователя
 export const saveUserData = async (userData: UserData): Promise<void> => {
   try {
     const userRef = doc(firestore, 'users', userData.id);
@@ -75,7 +44,6 @@ export const saveUserCategories = async (
   }
 };
 
-// Функции для работы с расходами пользователя
 export const loadUserExpenses = async (
   userId: string,
 ): Promise<ExpenseRecord[] | null> => {
@@ -87,7 +55,7 @@ export const loadUserExpenses = async (
       const data = docSnap.data();
       const expenses = (data.expenses as ExpenseRecord[]).map((expense) => ({
         ...expense,
-        date: new Date(expense.date), // Преобразование строки в объект Date
+        date: new Date(expense.date),
       }));
       return expenses;
     } else {
@@ -124,7 +92,6 @@ export const saveUserExpenses = async (
   }
 };
 
-// Функция для загрузки доходов пользователя
 export const loadUserIncomes = async (
   userId: string,
 ): Promise<IncomeRecord[] | null> => {
@@ -149,7 +116,6 @@ export const loadUserIncomes = async (
   }
 };
 
-// Функция для сохранения доходов пользователя
 export const saveUserIncomes = async (
   userId: string,
   incomes: IncomeRecord[],

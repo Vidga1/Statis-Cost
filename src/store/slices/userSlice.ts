@@ -1,12 +1,6 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-import { firestore } from '../../firebase/firebase'; // Импорт firestore
+import { firestore } from '../../firebase/firebase';
 import { doc, setDoc, deleteDoc } from 'firebase/firestore';
-
-interface UserState {
-  email: string | null;
-  token: string | null;
-  id: string | null;
-}
 
 const initialState: UserState = {
   email: null,

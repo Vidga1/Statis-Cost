@@ -7,22 +7,6 @@ import {
 } from '../../firebase/firebaseService';
 import { debounce } from 'lodash';
 
-interface Subcategory {
-  id: number;
-  name: string;
-}
-
-interface Category {
-  id: number;
-  name: string;
-  subcategories: Subcategory[];
-}
-
-interface CategoryManagerProps {
-  userId: string;
-  onCategoriesChange: (hasCategories: boolean) => void;
-}
-
 const CategoryManager: React.FC<CategoryManagerProps> = ({
   userId,
   onCategoriesChange,
@@ -37,7 +21,6 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({
   );
 
   useEffect(() => {
-    // Функция загрузки категорий
     const fetchCategories = async () => {
       const loadedCategories = await loadUserCategories(userId);
       if (loadedCategories) {
@@ -46,7 +29,6 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({
       }
     };
 
-    // Вызов функции загрузки при монтировании компонента
     fetchCategories();
   }, [userId, onCategoriesChange]);
 
@@ -58,11 +40,10 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({
 
   const updateCategories = (newCategories: Category[]) => {
     setCategories(newCategories);
-    saveUserCategories(userId, newCategories); // Сохраняем изменения
-    onCategoriesChange(newCategories.length > 0); // Обновляем состояние в SettingPage
+    saveUserCategories(userId, newCategories);
+    onCategoriesChange(newCategories.length > 0);
   };
 
-  // Обработчики действий с категориями и подкатегориями
   const handleAddCategory = (categoryName: string) => {
     const newCategory: Category = {
       id: Date.now(),

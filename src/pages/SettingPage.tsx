@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/use-auth';
 import { removeUser } from '../store/slices/userSlice';
 import { useAppDispatch } from '../hooks/redux-hooks';
-import CategoryManager from '../components/Category/CategoryManager';
+import CategoryManager from '../components/category/CategoryManager';
 import './SettingPage.css';
 
 const SettingPage = () => {

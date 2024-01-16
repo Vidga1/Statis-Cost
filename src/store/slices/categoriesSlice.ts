@@ -1,22 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-interface Subcategory {
-  id: number;
-  name: string;
-}
-
-interface Category {
-  id: number;
-  name: string;
-  subcategories: Subcategory[];
-}
-
-interface CategoriesState {
-  categoriesByUserId: {
-    [userId: string]: Category[];
-  };
-}
-
 const initialState: CategoriesState = {
   categoriesByUserId: {},
 };
