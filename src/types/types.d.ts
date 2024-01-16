@@ -23,14 +23,14 @@ interface CategoryDates {
 
 interface ExpenseRecord {
   id: string;
-  categoryId: number;
+  categoryId: string;
   date: Date;
   totalExpense: number;
 }
 
 interface IncomeRecord {
   id: string;
-  categoryId: number;
+  categoryId: string;
   date: Date;
   totalIncome: number;
 }

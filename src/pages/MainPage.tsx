@@ -16,6 +16,18 @@ import { v4 as uuidv4 } from 'uuid';
 import ExpenseItem from '../components/cost/ExpenseItem';
 import IncomeItem from '../components/cost/IncomeItem';
 
+import {
+  handleExpenseChange,
+  handleSubcategoryExpenseChange,
+  handleDateChange,
+  handleSaveExpense,
+  handleSaveIncome,
+  handleRemoveIncome,
+  handleRemoveExpense,
+  calculateTotalExpense,
+  calculateTotalIncome,
+} from '../components/cost/CalcCost';
+
 const MainPage: React.FC = () => {
   const { id } = useAuth();
   const dispatch = useAppDispatch();
@@ -30,7 +42,6 @@ const MainPage: React.FC = () => {
   const [categoryDates, setCategoryDates] = useState<CategoryDates>({});
   const [expenseRecords, setExpenseRecords] = useState<ExpenseRecord[]>([]);
   const [incomeRecords, setIncomeRecords] = useState<IncomeRecord[]>([]);
-  const [currentValue, setCurrentValue] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -79,82 +90,6 @@ const MainPage: React.FC = () => {
     }
   }, [incomeRecords, id]);
 
-  const handleExpenseChange = (categoryId: number, value: string) => {
-    setCategoryExpenses({ ...categoryExpenses, [categoryId]: Number(value) });
-  };
-
-  const handleSubcategoryExpenseChange = (key: string, value: string) => {
-    setSubcategoryExpenses({ ...subcategoryExpenses, [key]: Number(value) });
-  };
-
-  const handleDateChange = (categoryId: number, date: Date | null) => {
-    setCategoryDates({ ...categoryDates, [categoryId]: date });
-  };
-
-  const handleSubcategoryIncomeChange = (key: string, value: string) => {
-    const updatedIncomes = { ...subcategoryIncomes, [key]: Number(value) };
-    setSubcategoryIncomes(updatedIncomes);
-    console.log(`Updated subcategory incomes for ${key}: `, updatedIncomes);
-  };
-
-  const calculateTotalExpense = (categoryId: number) => {
-    const categoryExpense = categoryExpenses[categoryId] || 0;
-    const subcategoryExpense = Object.keys(subcategoryExpenses)
-      .filter((key) => key.startsWith(`${categoryId}-`))
-      .reduce((sum, key) => sum + subcategoryExpenses[key], 0);
-    return categoryExpense + subcategoryExpense;
-  };
-
-  const calculateTotalIncome = (categoryId: number) => {
-    const categoryIncome = categoryExpenses[categoryId] || 0;
-    const subcategoryIncome = Object.keys(subcategoryExpenses)
-      .filter((key) => key.startsWith(`${categoryId}-`))
-      .reduce((sum, key) => sum + (subcategoryExpenses[key] || 0), 0);
-    return categoryIncome + subcategoryIncome;
-  };
-
-  const handleSaveExpense = (categoryId: number) => {
-    const date = categoryDates[categoryId];
-    const totalExpense = calculateTotalExpense(categoryId);
-    if (date) {
-      setExpenseRecords([
-        ...expenseRecords,
-        { id: uuidv4(), categoryId, date, totalExpense },
-      ]);
-    }
-  };
-
-  const handleSaveIncome = (categoryId: number) => {
-    const date = categoryDates[categoryId];
-    const totalIncome = calculateTotalIncome(categoryId);
-    if (date) {
-      setIncomeRecords([
-        ...incomeRecords,
-        { id: uuidv4(), categoryId, date, totalIncome },
-      ]);
-    }
-  };
-
-  const [categoryIncomes, setCategoryIncomes] = useState<CategoryExpenses>({});
-  const [subcategoryIncomes, setSubcategoryIncomes] =
-    useState<SubcategoryExpenses>({});
-
-  const handleRemoveIncome = (recordId: string) => {
-    const updatedRecords = incomeRecords.filter(
-      (record) => record.id !== recordId,
-    );
-    setIncomeRecords(updatedRecords);
-    saveUserIncomes(id!, updatedRecords);
-  };
-
-  const handleRemoveExpense = (recordId: string) => {
-    const updatedRecords = expenseRecords.filter(
-      (record) => record.id !== recordId,
-    );
-    setExpenseRecords(updatedRecords);
-    saveUserExpenses(id!, updatedRecords);
-  };
-
   return (
     <div className="main-container">
       {categories.map((category) => (
@@ -168,21 +103,51 @@ const MainPage: React.FC = () => {
                 placeholder="Введите сумму"
                 value={categoryExpenses[category.id] || ''}
                 onChange={(e) =>
-                  handleExpenseChange(category.id, e.target.value)
+                  handleExpenseChange(
+                    setCategoryExpenses,
+                    String(category.id),
+                    e.target.value,
+                  )
                 }
               />
             )}
             <div className="date-picker-container">
               <DatePicker
                 selected={categoryDates[category.id]}
-                onChange={(date) => handleDateChange(category.id, date)}
+                onChange={(date) =>
+                  handleDateChange(setCategoryDates, String(category.id), date)
+                }
                 className="date-picker"
                 placeholderText="Выберите дату"
               />
-              <button onClick={() => handleSaveExpense(category.id)}>
+              <button
+                onClick={() =>
+                  handleSaveExpense(
+                    setExpenseRecords,
+                    expenseRecords,
+                    String(category.id),
+                    categoryDates,
+                    calculateTotalExpense,
+                    categoryExpenses,
+                    subcategoryExpenses,
+                  )
+                }
+              >
                 Расход
               </button>
-              <button onClick={() => handleSaveIncome(category.id)}>
+              <button
+                onClick={() =>
+                  handleSaveIncome(
+                    setIncomeRecords,
+                    incomeRecords,
+                    String(category.id),
+                    categoryDates,
+                    calculateTotalIncome,
+                    categoryExpenses,
+                    subcategoryExpenses,
+                  )
+                }
+              >
                 Доход
               </button>
             </div>
@@ -196,10 +161,12 @@ const MainPage: React.FC = () => {
                   className="subcategory-input"
                   placeholder="Введите сумму"
                   value={
-                    subcategoryExpenses[`${category.id}-${subcategory.id}`] || ''
+                    subcategoryExpenses[`${category.id}-${subcategory.id}`] ||
+                    ''
                   }
                   onChange={(e) =>
                     handleSubcategoryExpenseChange(
+                      setSubcategoryExpenses,
                       `${category.id}-${subcategory.id}`,
                       e.target.value,
                     )
@@ -208,28 +175,37 @@ const MainPage: React.FC = () => {
               )}
             </div>
           ))}
-        {expenseRecords
-          .filter((record) => record.categoryId === category.id)
-          .map((record) => (
-            <ExpenseItem
-              key={record.id}
-              record={record}
-              onRemove={handleRemoveExpense}
-            />
-          ))}
-        {incomeRecords
-          .filter((record) => record.categoryId === category.id)
-          .map((record) => (
-            <IncomeItem
-              key={record.id}
-              record={record}
-              onRemove={handleRemoveIncome}
-            />
-          ))}
-      </div>
-    ))}
-  </div>
-);
+          {expenseRecords
+            .filter((record) => record.categoryId === String(category.id))
+            .map((record) => (
+              <ExpenseItem
+                key={record.id}
+                record={record}
+                onRemove={() =>
+                  handleRemoveExpense(
+                    setExpenseRecords,
+                    expenseRecords,
+                    record.id,
+                  )
+                }
+              />
+            ))}
+
+          {incomeRecords
+            .filter((record) => record.categoryId === String(category.id))
+            .map((record) => (
+              <IncomeItem
+                key={record.id}
+                record={record}
+                onRemove={() =>
+                  handleRemoveIncome(setIncomeRecords, incomeRecords, record.id)
+                }
+              />
+            ))}
+        </div>
+      ))}
+    </div>
+  );
 };
 
 export default MainPage;

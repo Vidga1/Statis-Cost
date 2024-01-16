@@ -4,7 +4,7 @@ const IncomeItem: React.FC<IncomeItemProps> = ({ record, onRemove }) => {
   const formattedDate = new Date(record.date).toLocaleDateString('ru-RU', {
     day: 'numeric',
     month: 'long',
-    year: 'numeric'
+    year: 'numeric',
   });
 
   return (
