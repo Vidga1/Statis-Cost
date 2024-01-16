@@ -106,10 +106,11 @@ const MainPage: React.FC = () => {
   };
 
   const calculateTotalIncome = (categoryId: number) => {
+    const categoryIncome = categoryExpenses[categoryId] || 0;
     const subcategoryIncome = Object.keys(subcategoryExpenses)
       .filter((key) => key.startsWith(`${categoryId}-`))
       .reduce((sum, key) => sum + (subcategoryExpenses[key] || 0), 0);
-    return subcategoryIncome;
+    return categoryIncome + subcategoryIncome;
   };
 
   const handleSaveExpense = (categoryId: number) => {
@@ -154,48 +155,59 @@ const MainPage: React.FC = () => {
     saveUserExpenses(id!, updatedRecords);
   };
 
- return (
-  <div className="main-container">
-    {categories.map((category) => (
-      <div key={category.id} className="category-container">
-        <div className="category-header">
-          <span className="category-name">{category.name}</span>
-          <div className="date-picker-container">
-            <DatePicker
-              selected={categoryDates[category.id] || new Date()}
-              onChange={(date) => handleDateChange(category.id, date)}
-              className="date-picker"
-              placeholderText="Выберите дату"
-            />
-            <button onClick={() => handleSaveExpense(category.id)}>
-              Расход
-            </button>
-            <button onClick={() => handleSaveIncome(category.id)}>
-              Доход
-            </button>
-          </div>
-        </div>
-        {category.subcategories.map((subcategory) => (
-          <div key={subcategory.id} className="subcategory-container">
-            <span className="subcategory-name">{subcategory.name}</span>
+  return (
+    <div className="main-container">
+      {categories.map((category) => (
+        <div key={category.id} className="category-container">
+          <div className="category-header">
+            <span className="category-name">{category.name}</span>
             {categoryDates[category.id] && (
               <input
                 type="number"
-                className="subcategory-input"
+                className="category-input"
                 placeholder="Введите сумму"
-                value={
-                  subcategoryExpenses[`${category.id}-${subcategory.id}`] || ''
-                }
+                value={categoryExpenses[category.id] || ''}
                 onChange={(e) =>
-                  handleSubcategoryExpenseChange(
-                    `${category.id}-${subcategory.id}`,
-                    e.target.value,
-                  )
+                  handleExpenseChange(category.id, e.target.value)
                 }
               />
             )}
+            <div className="date-picker-container">
+              <DatePicker
+                selected={categoryDates[category.id]}
+                onChange={(date) => handleDateChange(category.id, date)}
+                className="date-picker"
+                placeholderText="Выберите дату"
+              />
+              <button onClick={() => handleSaveExpense(category.id)}>
+                Расход
+              </button>
+              <button onClick={() => handleSaveIncome(category.id)}>
+                Доход
+              </button>
+            </div>
           </div>
-        ))}
+          {category.subcategories.map((subcategory) => (
+            <div key={subcategory.id} className="subcategory-container">
+              <span className="subcategory-name">{subcategory.name}</span>
+              {categoryDates[category.id] && (
+                <input
+                  type="number"
+                  className="subcategory-input"
+                  placeholder="Введите сумму"
+                  value={
+                    subcategoryExpenses[`${category.id}-${subcategory.id}`] || ''
+                  }
+                  onChange={(e) =>
+                    handleSubcategoryExpenseChange(
+                      `${category.id}-${subcategory.id}`,
+                      e.target.value,
+                    )
+                  }
+                />
+              )}
+            </div>
+          ))}
         {expenseRecords
           .filter((record) => record.categoryId === category.id)
           .map((record) => (
