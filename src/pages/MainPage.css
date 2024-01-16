@@ -82,6 +82,14 @@
   font-size: 18px;
 }
 
+.total-income {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: rgb(172, 9, 9);
+  font-size: 18px;
+}
+
 .remove-button {
   cursor: pointer;
   background-color: #ff4d4f;

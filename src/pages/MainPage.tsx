@@ -5,12 +5,14 @@ import { useAuth } from '../hooks/use-auth';
 import { useAppSelector, useAppDispatch } from '../hooks/redux-hooks';
 import {
   loadUserCategories,
-  Category as FirebaseCategory,
   loadUserExpenses,
   saveUserExpenses,
+  loadUserIncomes,
+  saveUserIncomes,
 } from '../firebase/firebaseService';
 import { setCategoriesForUser } from '../store/slices/categoriesSlice';
 import './MainPage.css';
+import { v4 as uuidv4 } from 'uuid';
 
 interface Subcategory {
   id: number;
@@ -36,9 +38,17 @@ interface CategoryDates {
 }
 
 interface ExpenseRecord {
+  id: string;
   categoryId: number;
   date: Date;
   totalExpense: number;
+}
+
+interface IncomeRecord {
+  id: string;
+  categoryId: number;
+  date: Date;
+  totalIncome: number;
 }
 
 const MainPage: React.FC = () => {
@@ -54,20 +64,37 @@ const MainPage: React.FC = () => {
     useState<SubcategoryExpenses>({});
   const [categoryDates, setCategoryDates] = useState<CategoryDates>({});
   const [expenseRecords, setExpenseRecords] = useState<ExpenseRecord[]>([]);
+  const [incomeRecords, setIncomeRecords] = useState<IncomeRecord[]>([]);
+  const [currentValue, setCurrentValue] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
       if (id) {
         const loadedCategories = await loadUserCategories(id);
         const loadedExpenses = await loadUserExpenses(id);
+        const loadedIncomes = await loadUserIncomes(id);
+
         dispatch(
           setCategoriesForUser({
             userId: id,
-            categories: loadedCategories as FirebaseCategory[],
+            categories: loadedCategories as Category[],
           }),
         );
+
         if (loadedExpenses) {
-          setExpenseRecords(loadedExpenses);
+          const expensesWithId = loadedExpenses.map((expense) => ({
+            ...expense,
+            id: uuidv4(), // Добавление уникального ID
+          }));
+          setExpenseRecords(expensesWithId);
+        }
+
+        if (loadedIncomes) {
+          const incomesWithId = loadedIncomes.map((income) => ({
+            ...income,
+            id: uuidv4(), // Добавление уникального ID
+          }));
+          setIncomeRecords(incomesWithId);
         }
       }
     };
@@ -80,14 +107,15 @@ const MainPage: React.FC = () => {
     }
   }, [expenseRecords, id]);
 
+  useEffect(() => {
+    if (id && incomeRecords.length > 0) {
+      console.log('Saving income records to the database:', incomeRecords);
+      saveUserIncomes(id, incomeRecords);
+    }
+  }, [incomeRecords, id]);
+
   const handleExpenseChange = (categoryId: number, value: string) => {
     setCategoryExpenses({ ...categoryExpenses, [categoryId]: Number(value) });
-  };
-
-  const handleRemoveExpense = (recordIndex: number) => {
-    setExpenseRecords(
-      expenseRecords.filter((_, index) => index !== recordIndex),
-    );
   };
 
   const handleSubcategoryExpenseChange = (key: string, value: string) => {
@@ -98,24 +126,72 @@ const MainPage: React.FC = () => {
     setCategoryDates({ ...categoryDates, [categoryId]: date });
   };
 
+  const handleSubcategoryIncomeChange = (key: string, value: string) => {
+    const updatedIncomes = { ...subcategoryIncomes, [key]: Number(value) };
+    setSubcategoryIncomes(updatedIncomes);
+    console.log(`Updated subcategory incomes for ${key}: `, updatedIncomes);
+  };
+
   const calculateTotalExpense = (categoryId: number) => {
     const categoryExpense = categoryExpenses[categoryId] || 0;
     const subcategoryExpense = Object.keys(subcategoryExpenses)
       .filter((key) => key.startsWith(`${categoryId}-`))
       .reduce((sum, key) => sum + subcategoryExpenses[key], 0);
-
     return categoryExpense + subcategoryExpense;
   };
 
-  const handleSave = (categoryId: number) => {
+  const calculateTotalIncome = (categoryId: number) => {
+    console.log('Current categoryIncomes:', categoryIncomes);
+    console.log('Current subcategoryIncomes:', subcategoryIncomes);
+    const categoryIncome = categoryIncomes[categoryId] || 0;
+    const subcategoryIncome = Object.keys(subcategoryIncomes)
+      .filter((key) => key.startsWith(`${categoryId}-`))
+      .reduce((sum, key) => sum + subcategoryIncomes[key], 0);
+    const totalIncome = categoryIncome + subcategoryIncome;
+    console.log(`Total income for category ${categoryId}: ${totalIncome}`);
+    return totalIncome;
+  };
+
+  const handleSaveExpense = (categoryId: number) => {
     const date = categoryDates[categoryId];
     const totalExpense = calculateTotalExpense(categoryId);
     if (date) {
       setExpenseRecords([
         ...expenseRecords,
-        { categoryId, date, totalExpense },
+        { id: uuidv4(), categoryId, date, totalExpense },
       ]);
     }
+  };
+
+  const [categoryIncomes, setCategoryIncomes] = useState<CategoryExpenses>({});
+  const [subcategoryIncomes, setSubcategoryIncomes] =
+    useState<SubcategoryExpenses>({});
+
+  const handleSaveIncome = (categoryId: number) => {
+    const date = categoryDates[categoryId];
+    const totalIncome = calculateTotalIncome(categoryId);
+    if (date) {
+      setIncomeRecords([
+        ...incomeRecords,
+        { id: uuidv4(), categoryId, date, totalIncome },
+      ]);
+    }
+  };
+
+  const handleRemoveIncome = (recordId: string) => {
+    const updatedRecords = incomeRecords.filter(
+      (record) => record.id !== recordId,
+    );
+    setIncomeRecords(updatedRecords);
+    saveUserIncomes(id!, updatedRecords); // Обновление данных в Firestore
+  };
+
+  const handleRemoveExpense = (recordId: string) => {
+    const updatedRecords = expenseRecords.filter(
+      (record) => record.id !== recordId,
+    );
+    setExpenseRecords(updatedRecords);
+    saveUserExpenses(id!, updatedRecords); // Обновление данных в Firestore
   };
 
   return (
@@ -124,62 +200,84 @@ const MainPage: React.FC = () => {
         <div key={category.id} className="category-container">
           <div className="category-header">
             <span className="category-name">{category.name}</span>
-            {categoryDates[category.id] && (
-              <input
-                type="number"
-                className="category-input"
-                value={categoryExpenses[category.id] || ''}
-                onChange={(e) =>
-                  handleExpenseChange(category.id, e.target.value)
-                }
-              />
-            )}
             <div className="date-picker-container">
               <DatePicker
-                selected={categoryDates[category.id]}
+                selected={categoryDates[category.id] || new Date()}
                 onChange={(date) => handleDateChange(category.id, date)}
                 className="date-picker"
                 placeholderText="Выберите дату"
               />
-              {categoryDates[category.id] && (
-                <button onClick={() => handleSave(category.id)}>Расчёт</button>
-              )}
+              <button onClick={() => handleSaveExpense(category.id)}>
+                Расход
+              </button>
+              <button onClick={() => handleSaveIncome(category.id)}>
+                Доход
+              </button>
             </div>
           </div>
           {category.subcategories.map((subcategory) => (
             <div key={subcategory.id} className="subcategory-container">
               <span className="subcategory-name">{subcategory.name}</span>
               {categoryDates[category.id] && (
-                <input
-                  type="number"
-                  className="subcategory-input"
-                  value={
-                    subcategoryExpenses[`${category.id}-${subcategory.id}`] ||
-                    ''
-                  }
-                  onChange={(e) =>
-                    handleSubcategoryExpenseChange(
-                      `${category.id}-${subcategory.id}`,
-                      e.target.value,
-                    )
-                  }
-                />
+                <>
+                  <input
+                    type="number"
+                    className="subcategory-input"
+                    placeholder="Расход"
+                    value={
+                      subcategoryExpenses[`${category.id}-${subcategory.id}`] ||
+                      ''
+                    }
+                    onChange={(e) =>
+                      handleSubcategoryExpenseChange(
+                        `${category.id}-${subcategory.id}`,
+                        e.target.value,
+                      )
+                    }
+                  />
+                  <input
+                    type="number"
+                    className="subcategory-input"
+                    placeholder="Доход"
+                    value={
+                      subcategoryIncomes[`${category.id}-${subcategory.id}`] ||
+                      ''
+                    }
+                    onChange={(e) =>
+                      handleSubcategoryIncomeChange(
+                        `${category.id}-${subcategory.id}`,
+                        e.target.value,
+                      )
+                    }
+                  />
+                </>
               )}
             </div>
           ))}
           {expenseRecords
             .filter((record) => record.categoryId === category.id)
-            .map((record, index) => (
-              <div key={index} className="total-expense">
+            .map((record) => (
+              <div key={record.id} className="total-expense">
                 Сумма расходов{' '}
-                {new Date(record.date).toLocaleDateString('ru-RU', {
-                  day: 'numeric',
-                  month: 'long',
-                  year: 'numeric',
-                })}{' '}
-                составляет {record.totalExpense} рублей.
+                {new Date(record.date).toLocaleDateString('ru-RU')} составляет{' '}
+                {record.totalExpense} рублей.
                 <button
-                  onClick={() => handleRemoveExpense(index)}
+                  onClick={() => handleRemoveExpense(record.id)}
+                  className="remove-button"
+                >
+                  x
+                </button>
+              </div>
+            ))}
+          {incomeRecords
+            .filter((record) => record.categoryId === category.id)
+            .map((record) => (
+              <div key={record.id} className="total-income">
+                Сумма доходов{' '}
+                {new Date(record.date).toLocaleDateString('ru-RU')} составляет{' '}
+                {record.totalIncome} рублей.
+                <button
+                  onClick={() => handleRemoveIncome(record.id)}
                   className="remove-button"
                 >
                   x

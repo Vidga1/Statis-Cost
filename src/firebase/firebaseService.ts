@@ -25,6 +25,12 @@ interface ExpenseRecord {
   totalExpense: number;
 }
 
+interface IncomeRecord {
+  categoryId: number;
+  date: Date;
+  totalIncome: number;
+}
+
 // Функции для работы с данными пользователя
 export const saveUserData = async (userData: UserData): Promise<void> => {
   try {
@@ -115,5 +121,55 @@ export const saveUserExpenses = async (
     console.log('Расходы пользователя сохранены в Firestore');
   } catch (error) {
     console.error('Ошибка при сохранении расходов пользователя:', error);
+  }
+};
+
+// Функция для загрузки доходов пользователя
+export const loadUserIncomes = async (
+  userId: string,
+): Promise<IncomeRecord[] | null> => {
+  try {
+    const incomesRef = doc(firestore, 'userIncomes', userId);
+    const docSnap = await getDoc(incomesRef);
+
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      const incomes = (data.incomes as IncomeRecord[]).map((income) => ({
+        ...income,
+        date: new Date(income.date),
+      }));
+      return incomes;
+    } else {
+      console.log('Доходы пользователя не найдены в Firestore');
+      return null;
+    }
+  } catch (error) {
+    console.error('Ошибка при загрузке доходов пользователя:', error);
+    return null;
+  }
+};
+
+// Функция для сохранения доходов пользователя
+export const saveUserIncomes = async (
+  userId: string,
+  incomes: IncomeRecord[],
+): Promise<void> => {
+  try {
+    const formattedIncomes = incomes.map((income) => {
+      if (!(income.date instanceof Date) || isNaN(income.date.getTime())) {
+        console.error('Недействительная дата в доходах:', income);
+        throw new RangeError('Invalid date value');
+      }
+      return {
+        ...income,
+        date: income.date.toISOString(),
+      };
+    });
+
+    const incomesRef = doc(firestore, 'userIncomes', userId);
+    await setDoc(incomesRef, { incomes: formattedIncomes });
+    console.log('Доходы пользователя сохранены в Firestore');
+  } catch (error) {
+    console.error('Ошибка при сохранении доходов пользователя:', error);
   }
 };
