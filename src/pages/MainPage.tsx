@@ -106,15 +106,10 @@ const MainPage: React.FC = () => {
   };
 
   const calculateTotalIncome = (categoryId: number) => {
-    console.log('Current categoryIncomes:', categoryIncomes);
-    console.log('Current subcategoryIncomes:', subcategoryIncomes);
-    const categoryIncome = categoryIncomes[categoryId] || 0;
-    const subcategoryIncome = Object.keys(subcategoryIncomes)
+    const subcategoryIncome = Object.keys(subcategoryExpenses)
       .filter((key) => key.startsWith(`${categoryId}-`))
-      .reduce((sum, key) => sum + subcategoryIncomes[key], 0);
-    const totalIncome = categoryIncome + subcategoryIncome;
-    console.log(`Total income for category ${categoryId}: ${totalIncome}`);
-    return totalIncome;
+      .reduce((sum, key) => sum + (subcategoryExpenses[key] || 0), 0);
+    return subcategoryIncome;
   };
 
   const handleSaveExpense = (categoryId: number) => {
@@ -128,10 +123,6 @@ const MainPage: React.FC = () => {
     }
   };
 
-  const [categoryIncomes, setCategoryIncomes] = useState<CategoryExpenses>({});
-  const [subcategoryIncomes, setSubcategoryIncomes] =
-    useState<SubcategoryExpenses>({});
-
   const handleSaveIncome = (categoryId: number) => {
     const date = categoryDates[categoryId];
     const totalIncome = calculateTotalIncome(categoryId);
@@ -142,6 +133,10 @@ const MainPage: React.FC = () => {
       ]);
     }
   };
+
+  const [categoryIncomes, setCategoryIncomes] = useState<CategoryExpenses>({});
+  const [subcategoryIncomes, setSubcategoryIncomes] =
+    useState<SubcategoryExpenses>({});
 
   const handleRemoveIncome = (recordId: string) => {
     const updatedRecords = incomeRecords.filter(
@@ -159,88 +154,70 @@ const MainPage: React.FC = () => {
     saveUserExpenses(id!, updatedRecords);
   };
 
-  return (
-    <div className="main-container">
-      {categories.map((category) => (
-        <div key={category.id} className="category-container">
-          <div className="category-header">
-            <span className="category-name">{category.name}</span>
-            <div className="date-picker-container">
-              <DatePicker
-                selected={categoryDates[category.id] || new Date()}
-                onChange={(date) => handleDateChange(category.id, date)}
-                className="date-picker"
-                placeholderText="Выберите дату"
-              />
-              <button onClick={() => handleSaveExpense(category.id)}>
-                Расход
-              </button>
-              <button onClick={() => handleSaveIncome(category.id)}>
-                Доход
-              </button>
-            </div>
+ return (
+  <div className="main-container">
+    {categories.map((category) => (
+      <div key={category.id} className="category-container">
+        <div className="category-header">
+          <span className="category-name">{category.name}</span>
+          <div className="date-picker-container">
+            <DatePicker
+              selected={categoryDates[category.id] || new Date()}
+              onChange={(date) => handleDateChange(category.id, date)}
+              className="date-picker"
+              placeholderText="Выберите дату"
+            />
+            <button onClick={() => handleSaveExpense(category.id)}>
+              Расход
+            </button>
+            <button onClick={() => handleSaveIncome(category.id)}>
+              Доход
+            </button>
           </div>
-          {category.subcategories.map((subcategory) => (
-            <div key={subcategory.id} className="subcategory-container">
-              <span className="subcategory-name">{subcategory.name}</span>
-              {categoryDates[category.id] && (
-                <>
-                  <input
-                    type="number"
-                    className="subcategory-input"
-                    placeholder="Расход"
-                    value={
-                      subcategoryExpenses[`${category.id}-${subcategory.id}`] ||
-                      ''
-                    }
-                    onChange={(e) =>
-                      handleSubcategoryExpenseChange(
-                        `${category.id}-${subcategory.id}`,
-                        e.target.value,
-                      )
-                    }
-                  />
-                  <input
-                    type="number"
-                    className="subcategory-input"
-                    placeholder="Доход"
-                    value={
-                      subcategoryIncomes[`${category.id}-${subcategory.id}`] ||
-                      ''
-                    }
-                    onChange={(e) =>
-                      handleSubcategoryIncomeChange(
-                        `${category.id}-${subcategory.id}`,
-                        e.target.value,
-                      )
-                    }
-                  />
-                </>
-              )}
-            </div>
-          ))}
-          {expenseRecords
-            .filter((record) => record.categoryId === category.id)
-            .map((record) => (
-              <ExpenseItem
-                key={record.id}
-                record={record}
-                onRemove={handleRemoveExpense}
-              />
-            ))}
-          {incomeRecords
-            .filter((record) => record.categoryId === category.id)
-            .map((record) => (
-              <IncomeItem
-                key={record.id}
-                record={record}
-                onRemove={handleRemoveIncome}
-              />
-            ))}
         </div>
-      ))}
-    </div>
-  );
+        {category.subcategories.map((subcategory) => (
+          <div key={subcategory.id} className="subcategory-container">
+            <span className="subcategory-name">{subcategory.name}</span>
+            {categoryDates[category.id] && (
+              <input
+                type="number"
+                className="subcategory-input"
+                placeholder="Введите сумму"
+                value={
+                  subcategoryExpenses[`${category.id}-${subcategory.id}`] || ''
+                }
+                onChange={(e) =>
+                  handleSubcategoryExpenseChange(
+                    `${category.id}-${subcategory.id}`,
+                    e.target.value,
+                  )
+                }
+              />
+            )}
+          </div>
+        ))}
+        {expenseRecords
+          .filter((record) => record.categoryId === category.id)
+          .map((record) => (
+            <ExpenseItem
+              key={record.id}
+              record={record}
+              onRemove={handleRemoveExpense}
+            />
+          ))}
+        {incomeRecords
+          .filter((record) => record.categoryId === category.id)
+          .map((record) => (
+            <IncomeItem
+              key={record.id}
+              record={record}
+              onRemove={handleRemoveIncome}
+            />
+          ))}
+      </div>
+    ))}
+  </div>
+);
 };
 
 export default MainPage;
