@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
 import { useAuth } from '../hooks/use-auth';
 import { useAppSelector, useAppDispatch } from '../hooks/redux-hooks';
 import {
@@ -13,20 +11,7 @@ import {
 import { setCategoriesForUser } from '../store/slices/categoriesSlice';
 import './MainPage.css';
 import { v4 as uuidv4 } from 'uuid';
-import ExpenseItem from '../components/cost/ExpenseItem';
-import IncomeItem from '../components/cost/IncomeItem';
-
-import {
-  handleExpenseChange,
-  handleSubcategoryExpenseChange,
-  handleDateChange,
-  handleSaveExpense,
-  handleSaveIncome,
-  handleRemoveIncome,
-  handleRemoveExpense,
-  calculateTotalExpense,
-  calculateTotalIncome,
-} from '../components/cost/CalcCost';
+import CostItems from '../components/cost/CostItems';
 
 const MainPage: React.FC = () => {
   const { id } = useAuth();
@@ -34,12 +19,10 @@ const MainPage: React.FC = () => {
   const categories = useAppSelector(
     (state) => state.categories.categoriesByUserId[id || ''] || [],
   );
-  const [categoryExpenses, setCategoryExpenses] = useState<CategoryExpenses>(
-    {},
-  );
-  const [subcategoryExpenses, setSubcategoryExpenses] =
-    useState<SubcategoryExpenses>({});
-  const [categoryDates, setCategoryDates] = useState<CategoryDates>({});
+
+  const [categoryExpenses, setCategoryExpenses] = useState<{ [key: string]: number }>({});
+  const [subcategoryExpenses, setSubcategoryExpenses] = useState<{ [key: string]: number }>({});
+  const [categoryDates, setCategoryDates] = useState<{ [key: string]: Date | null }>({});
   const [expenseRecords, setExpenseRecords] = useState<ExpenseRecord[]>([]);
   const [incomeRecords, setIncomeRecords] = useState<IncomeRecord[]>([]);
 
@@ -92,118 +75,19 @@ const MainPage: React.FC = () => {
 
   return (
     <div className="main-container">
-      {categories.map((category) => (
-        <div key={category.id} className="category-container">
-          <div className="category-header">
-            <span className="category-name">{category.name}</span>
-            {categoryDates[category.id] && (
-              <input
-                type="number"
-                className="category-input"
-                placeholder="Введите сумму"
-                value={categoryExpenses[category.id] || ''}
-                onChange={(e) =>
-                  handleExpenseChange(
-                    setCategoryExpenses,
-                    String(category.id),
-                    e.target.value,
-                  )
-                }
-              />
-            )}
-            <div className="date-picker-container">
-              <DatePicker
-                selected={categoryDates[category.id]}
-                onChange={(date) =>
-                  handleDateChange(setCategoryDates, String(category.id), date)
-                }
-                className="date-picker"
-                placeholderText="Выберите дату"
-              />
-              <button
-                onClick={() =>
-                  handleSaveExpense(
-                    setExpenseRecords,
-                    expenseRecords,
-                    String(category.id),
-                    categoryDates,
-                    calculateTotalExpense,
-                    categoryExpenses,
-                    subcategoryExpenses,
-                  )
-                }
-              >
-                Расход
-              </button>
-              <button
-                onClick={() =>
-                  handleSaveIncome(
-                    setIncomeRecords,
-                    incomeRecords,
-                    String(category.id),
-                    categoryDates,
-                    calculateTotalIncome,
-                    categoryExpenses,
-                    subcategoryExpenses,
-                  )
-                }
-              >
-                Доход
-              </button>
-            </div>
-          </div>
-          {category.subcategories.map((subcategory) => (
-            <div key={subcategory.id} className="subcategory-container">
-              <span className="subcategory-name">{subcategory.name}</span>
-              {categoryDates[category.id] && (
-                <input
-                  type="number"
-                  className="subcategory-input"
-                  placeholder="Введите сумму"
-                  value={
-                    subcategoryExpenses[`${category.id}-${subcategory.id}`] ||
-                    ''
-                  }
-                  onChange={(e) =>
-                    handleSubcategoryExpenseChange(
-                      setSubcategoryExpenses,
-                      `${category.id}-${subcategory.id}`,
-                      e.target.value,
-                    )
-                  }
-                />
-              )}
-            </div>
-          ))}
-          {expenseRecords
-            .filter((record) => record.categoryId === String(category.id))
-            .map((record) => (
-              <ExpenseItem
-                key={record.id}
-                record={record}
-                onRemove={() =>
-                  handleRemoveExpense(
-                    setExpenseRecords,
-                    expenseRecords,
-                    record.id,
-                  )
-                }
-              />
-            ))}
-
-          {incomeRecords
-            .filter((record) => record.categoryId === String(category.id))
-            .map((record) => (
-              <IncomeItem
-                key={record.id}
-                record={record}
-                onRemove={() =>
-                  handleRemoveIncome(setIncomeRecords, incomeRecords, record.id)
-                }
-              />
-            ))}
-        </div>
-      ))}
+      <CostItems
+        categories={categories}
+        categoryExpenses={categoryExpenses}
+        subcategoryExpenses={subcategoryExpenses}
+        categoryDates={categoryDates}
+        expenseRecords={expenseRecords}
+        incomeRecords={incomeRecords}
+        setCategoryExpenses={setCategoryExpenses}
+        setSubcategoryExpenses={setSubcategoryExpenses}
+        setCategoryDates={setCategoryDates}
+        setExpenseRecords={setExpenseRecords}
+        setIncomeRecords={setIncomeRecords}
+      />
     </div>
   );
 };
