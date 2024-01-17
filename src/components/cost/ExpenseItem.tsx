@@ -9,7 +9,7 @@ const ExpenseItem: React.FC<ExpenseItemProps> = ({ record, onRemove }) => {
 
   return (
     <div className="total-expense">
-      Расходы {formattedDate} {record.totalExpense} рублей.
+      {formattedDate} {record.totalExpense} рублей.
       <button onClick={() => onRemove(record.id)} className="remove-button">
         x
       </button>

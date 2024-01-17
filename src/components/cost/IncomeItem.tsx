@@ -9,7 +9,7 @@ const IncomeItem: React.FC<IncomeItemProps> = ({ record, onRemove }) => {
 
   return (
     <div className="total-income">
-      Доходы {formattedDate} {record.totalIncome} рублей.
+      {formattedDate} {record.totalIncome} рублей.
       <button onClick={() => onRemove(record.id)} className="remove-button">
         x
       </button>

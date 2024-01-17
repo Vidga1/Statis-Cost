@@ -23,9 +23,15 @@ type CostItemsProps = {
   categoryDates: { [key: string]: Date | null };
   expenseRecords: ExpenseRecord[];
   incomeRecords: IncomeRecord[];
-  setCategoryExpenses: React.Dispatch<React.SetStateAction<{ [key: string]: number }>>;
-  setSubcategoryExpenses: React.Dispatch<React.SetStateAction<{ [key: string]: number }>>;
-  setCategoryDates: React.Dispatch<React.SetStateAction<{ [key: string]: Date | null }>>;
+  setCategoryExpenses: React.Dispatch<
+    React.SetStateAction<{ [key: string]: number }>
+  >;
+  setSubcategoryExpenses: React.Dispatch<
+    React.SetStateAction<{ [key: string]: number }>
+  >;
+  setCategoryDates: React.Dispatch<
+    React.SetStateAction<{ [key: string]: Date | null }>
+  >;
   setExpenseRecords: React.Dispatch<React.SetStateAction<ExpenseRecord[]>>;
   setIncomeRecords: React.Dispatch<React.SetStateAction<IncomeRecord[]>>;
 };
@@ -43,6 +49,10 @@ const CostItems: React.FC<CostItemsProps> = ({
   setExpenseRecords,
   setIncomeRecords,
 }) => {
+  const resetInputs = () => {
+    setCategoryExpenses({});
+    setSubcategoryExpenses({});
+  };
   return (
     <>
       {categories.map((category) => (
@@ -74,7 +84,7 @@ const CostItems: React.FC<CostItemsProps> = ({
                 placeholderText="Выберите дату"
               />
               <button
-                onClick={() =>
+                onClick={() => {
                   handleSaveExpense(
                     setExpenseRecords,
                     expenseRecords,
@@ -83,13 +93,14 @@ const CostItems: React.FC<CostItemsProps> = ({
                     calculateTotalExpense,
                     categoryExpenses,
                     subcategoryExpenses,
-                  )
-                }
+                  );
+                  resetInputs();
+                }}
               >
                 Расход
               </button>
               <button
-                onClick={() =>
+                onClick={() => {
                   handleSaveIncome(
                     setIncomeRecords,
                     incomeRecords,
@@ -98,8 +109,9 @@ const CostItems: React.FC<CostItemsProps> = ({
                     calculateTotalIncome,
                     categoryExpenses,
                     subcategoryExpenses,
-                  )
-                }
+                  );
+                  resetInputs();
+                }}
               >
                 Доход
               </button>
@@ -128,37 +140,47 @@ const CostItems: React.FC<CostItemsProps> = ({
               )}
             </div>
           ))}
-          {expenseRecords
-            .filter((record) => record.categoryId === String(category.id))
-            .map((record) => (
-              <ExpenseItem
-                key={record.id}
-                record={record}
-                onRemove={() =>
-                  handleRemoveExpense(
-                    setExpenseRecords,
-                    expenseRecords,
-                    record.id,
-                  )
-                }
-              />
-            ))}
-
-          {incomeRecords
-            .filter((record) => record.categoryId === String(category.id))
-            .map((record) => (
-              <IncomeItem
-                key={record.id}
-                record={record}
-                onRemove={() =>
-                  handleRemoveIncome(setIncomeRecords, incomeRecords, record.id)
-                }
-              />
-            ))}
+          <div className="expenses-incomes-container">
+            <div className="expenses-container">
+              <div className="expenses-header">Расходы</div>
+              {expenseRecords
+                .filter((record) => record.categoryId === String(category.id))
+                .map((record) => (
+                  <ExpenseItem
+                    key={record.id}
+                    record={record}
+                    onRemove={() =>
+                      handleRemoveExpense(
+                        setExpenseRecords,
+                        expenseRecords,
+                        record.id,
+                      )
+                    }
+                  />
+                ))}
+            </div>
+            <div className="incomes-container">
+              <div className="incomes-header">Доходы</div>
+              {incomeRecords
+                .filter((record) => record.categoryId === String(category.id))
+                .map((record) => (
+                  <IncomeItem
+                    key={record.id}
+                    record={record}
+                    onRemove={() =>
+                      handleRemoveIncome(
+                        setIncomeRecords,
+                        incomeRecords,
+                        record.id,
+                      )
+                    }
+                  />
+                ))}
+            </div>
+          </div>
         </div>
       ))}
     </>
   );
 };
-
 export default CostItems;

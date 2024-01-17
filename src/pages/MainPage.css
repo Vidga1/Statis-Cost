@@ -74,20 +74,17 @@
   align-self: center;
 }
 
-.total-expense {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  color: black;
-  font-size: 18px;
-}
-
+.total-expense,
 .total-income {
   display: flex;
+  color: black;
   align-items: center;
-  justify-content: space-between;
-  color: rgb(172, 9, 9);
-  font-size: 18px;
+  justify-content: flex-start;
+}
+
+.total-expense > button,
+.total-income > button {
+  margin-left: 10px;
 }
 
 .remove-button {
@@ -119,4 +116,23 @@
   box-shadow:
     0 4px 8px rgba(0, 0, 0, 0.2),
     0 0 0 2px rgba(255, 77, 79, 0.4);
+}
+
+.expenses-incomes-container {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.expenses-container,
+.incomes-container {
+  width: 50%;
+}
+
+.expenses-header,
+.incomes-header {
+  color: red;
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 10px;
 }
