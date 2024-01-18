@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import ExpenseItem from './ExpenseItem';
@@ -49,10 +50,20 @@ const CostItems: React.FC<CostItemsProps> = ({
   setExpenseRecords,
   setIncomeRecords,
 }) => {
+  const navigate = useNavigate();
   const resetInputs = () => {
     setCategoryExpenses({});
     setSubcategoryExpenses({});
   };
+
+  const handleViewWeeklyExpenses = () => {
+    navigate('/stats?type=expenses&period=week');
+  };
+
+  const handleViewWeeklyIncome = () => {
+    navigate('/stats?type=income&period=week');
+  };
+
   return (
     <>
       {categories.map((category) => (
@@ -144,7 +155,7 @@ const CostItems: React.FC<CostItemsProps> = ({
             <div className="expenses-container">
             <div className="expenses-header">
             Расходы
-            <button>Расходы за неделю</button>
+               <button onClick={handleViewWeeklyExpenses}>Расходы за неделю</button>
           </div>
               {expenseRecords
                 .filter((record) => record.categoryId === String(category.id))
@@ -165,7 +176,7 @@ const CostItems: React.FC<CostItemsProps> = ({
             <div className="incomes-container">
             <div className="incomes-header">
             Доходы
-            <button>Доходы за неделю</button>
+             <button onClick={handleViewWeeklyIncome}>Доходы за неделю</button>
           </div>
               {incomeRecords
                 .filter((record) => record.categoryId === String(category.id))

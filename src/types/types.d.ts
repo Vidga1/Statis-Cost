@@ -100,3 +100,14 @@ interface UserState {
   token: string | null;
   id: string | null;
 }
+
+interface ChartData {
+  labels: string[];
+  datasets: Array<{
+    label: string;
+    data: number[];
+    backgroundColor: string;
+    borderColor: string;
+    borderWidth: number;
+  }>;
+}

@@ -31,7 +31,7 @@ export const handleDateChange = (
 ) => {
   setCategoryDates((prevDates) => ({
     ...prevDates,
-    [categoryId]: date,
+    [categoryId]: date || new Date(), // устанавливаем текущую дату, если date равно null
   }));
 };
 
