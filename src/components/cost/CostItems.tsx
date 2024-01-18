@@ -142,7 +142,10 @@ const CostItems: React.FC<CostItemsProps> = ({
           ))}
           <div className="expenses-incomes-container">
             <div className="expenses-container">
-              <div className="expenses-header">Расходы</div>
+            <div className="expenses-header">
+            Расходы
+            <button>Расходы за неделю</button>
+          </div>
               {expenseRecords
                 .filter((record) => record.categoryId === String(category.id))
                 .map((record) => (
@@ -160,7 +163,10 @@ const CostItems: React.FC<CostItemsProps> = ({
                 ))}
             </div>
             <div className="incomes-container">
-              <div className="incomes-header">Доходы</div>
+            <div className="incomes-header">
+            Доходы
+            <button>Доходы за неделю</button>
+          </div>
               {incomeRecords
                 .filter((record) => record.categoryId === String(category.id))
                 .map((record) => (

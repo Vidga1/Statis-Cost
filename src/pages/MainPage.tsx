@@ -1,9 +1,14 @@
 import React from 'react';
 import './MainPage.css';
+import { useNavigate } from 'react-router-dom';
 import CostItems from '../components/cost/CostItems';
 import useLoadCost from '../hooks/useLoadCost';
 
 const MainPage: React.FC = () => {
+  const navigate = useNavigate();
+  const handleBackClick = () => {
+    navigate('/settings');
+  };
   const {
     categories,
     categoryExpenses,
@@ -20,6 +25,7 @@ const MainPage: React.FC = () => {
 
   return (
     <div className="main-container">
+      <button className="backButton" onClick={handleBackClick}>Назад</button>
       <CostItems
         categories={categories}
         categoryExpenses={categoryExpenses}

@@ -1,3 +1,28 @@
+.backButton {
+  position: absolute;
+  top: 20px; 
+  right: 80px;
+  padding: 10px 20px;
+  background-color: #0f0d80; 
+  color: white; 
+  border: none; 
+  border-radius: 5px; 
+  font-size: 16px; 
+  cursor: pointer; 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.backButton:hover {
+  background-color: #455da0; 
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); 
+}
+
+.backButton:active {
+  background-color: #3a397d;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+}
+
 .main-container {
   display: flex;
   flex-direction: column;
