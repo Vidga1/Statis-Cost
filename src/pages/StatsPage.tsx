@@ -37,7 +37,9 @@ const StatsPage = () => {
 
   const containerStyles: React.CSSProperties = {
     height: '600px',
-    width: '100%',
+    width: '1800px',
+    marginTop: '30px',
+    marginLeft: '40px',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -63,13 +65,16 @@ const StatsPage = () => {
       },
       x: {
         ticks: {
-          color: '#fff', 
+          color: 'gold', 
+          font: {
+            size: 14,
+            weight: 'bold' as const,
+          },
+          textStrokeColor: 'black',
+          textStrokeWidth: 3,
         },
-        grid: {
-          color: 'rgba(255, 255, 255, 0.1)' 
-        }
-      }
-    },
+        },
+      },
     plugins: {
       legend: {
         position: 'top' as const,
