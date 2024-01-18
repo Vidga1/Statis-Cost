@@ -35,6 +35,12 @@ type CostItemsProps = {
   >;
   setExpenseRecords: React.Dispatch<React.SetStateAction<ExpenseRecord[]>>;
   setIncomeRecords: React.Dispatch<React.SetStateAction<IncomeRecord[]>>;
+  userId: string;
+  saveUserExpenses: (
+    userId: string,
+    expenses: ExpenseRecord[],
+  ) => Promise<void>;
+  saveUserIncomes: (userId: string, incomes: IncomeRecord[]) => Promise<void>;
 };
 
 const CostItems: React.FC<CostItemsProps> = ({
@@ -49,6 +55,9 @@ const CostItems: React.FC<CostItemsProps> = ({
   setCategoryDates,
   setExpenseRecords,
   setIncomeRecords,
+  userId,
+  saveUserExpenses,
+  saveUserIncomes,
 }) => {
   const navigate = useNavigate();
   const resetInputs = () => {
@@ -153,10 +162,12 @@ const CostItems: React.FC<CostItemsProps> = ({
           ))}
           <div className="expenses-incomes-container">
             <div className="expenses-container">
-            <div className="expenses-header">
-            Расходы
-               <button onClick={handleViewWeeklyExpenses}>Расходы за неделю</button>
-          </div>
+              <div className="expenses-header">
+                Расходы
+                <button onClick={handleViewWeeklyExpenses}>
+                  Расходы за неделю
+                </button>
+              </div>
               {expenseRecords
                 .filter((record) => record.categoryId === String(category.id))
                 .map((record) => (
@@ -168,16 +179,20 @@ const CostItems: React.FC<CostItemsProps> = ({
                         setExpenseRecords,
                         expenseRecords,
                         record.id,
+                        userId,
+                        saveUserExpenses,
                       )
                     }
                   />
                 ))}
             </div>
             <div className="incomes-container">
-            <div className="incomes-header">
-            Доходы
-             <button onClick={handleViewWeeklyIncome}>Доходы за неделю</button>
-          </div>
+              <div className="incomes-header">
+                Доходы
+                <button onClick={handleViewWeeklyIncome}>
+                  Доходы за неделю
+                </button>
+              </div>
               {incomeRecords
                 .filter((record) => record.categoryId === String(category.id))
                 .map((record) => (
@@ -189,6 +204,8 @@ const CostItems: React.FC<CostItemsProps> = ({
                         setIncomeRecords,
                         incomeRecords,
                         record.id,
+                        userId,
+                        saveUserIncomes,
                       )
                     }
                   />

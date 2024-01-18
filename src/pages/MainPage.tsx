@@ -9,6 +9,7 @@ const MainPage: React.FC = () => {
   const handleBackClick = () => {
     navigate('/settings');
   };
+
   const {
     categories,
     categoryExpenses,
@@ -21,11 +22,20 @@ const MainPage: React.FC = () => {
     setExpenseRecords,
     incomeRecords,
     setIncomeRecords,
+    saveUserExpenses,
+    saveUserIncomes,
+    userId,
   } = useLoadCost();
+
+  if (!userId) {
+    return <div>Пользователь не аутентифицирован</div>;
+  }
 
   return (
     <div className="main-container">
-      <button className="backButton" onClick={handleBackClick}>Назад</button>
+      <button className="backButton" onClick={handleBackClick}>
+        Назад
+      </button>
       <CostItems
         categories={categories}
         categoryExpenses={categoryExpenses}
@@ -38,6 +48,9 @@ const MainPage: React.FC = () => {
         setCategoryDates={setCategoryDates}
         setExpenseRecords={setExpenseRecords}
         setIncomeRecords={setIncomeRecords}
+        saveUserExpenses={saveUserExpenses}
+        saveUserIncomes={saveUserIncomes}
+        userId={userId}
       />
     </div>
   );

@@ -31,7 +31,7 @@ export const handleDateChange = (
 ) => {
   setCategoryDates((prevDates) => ({
     ...prevDates,
-    [categoryId]: date || new Date(), // устанавливаем текущую дату, если date равно null
+    [categoryId]: date || new Date(), 
   }));
 };
 
@@ -48,7 +48,7 @@ export const calculateTotalExpense = (
 };
 
 export const calculateTotalIncome = (
-  categoryExpenses: CategoryExpenses, // Возможно, у вас есть отдельный тип для доходов
+  categoryExpenses: CategoryExpenses, 
   subcategoryExpenses: SubcategoryExpenses,
   categoryId: string,
 ): number => {
@@ -117,14 +117,26 @@ export const handleRemoveIncome = (
   setIncomeRecords: React.Dispatch<React.SetStateAction<IncomeRecord[]>>,
   incomeRecords: IncomeRecord[],
   recordId: string,
+  userId: string, 
+  saveUserIncomes: (userId: string, incomes: IncomeRecord[]) => Promise<void>, 
 ) => {
-  setIncomeRecords(incomeRecords.filter((record) => record.id !== recordId));
+  const updatedIncomes = incomeRecords.filter(
+    (record) => record.id !== recordId,
+  );
+  setIncomeRecords(updatedIncomes);
+  saveUserIncomes(userId, updatedIncomes); 
 };
 
 export const handleRemoveExpense = (
   setExpenseRecords: React.Dispatch<React.SetStateAction<ExpenseRecord[]>>,
   expenseRecords: ExpenseRecord[],
   recordId: string,
+  userId: string,
+  saveExpenses: (userId: string, expenses: ExpenseRecord[]) => Promise<void>,
 ) => {
-  setExpenseRecords(expenseRecords.filter((record) => record.id !== recordId));
+  const updatedExpenses = expenseRecords.filter(
+    (record) => record.id !== recordId,
+  );
+  setExpenseRecords(updatedExpenses);
+  saveExpenses(userId, updatedExpenses); 
 };

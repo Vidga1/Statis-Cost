@@ -15,7 +15,15 @@ import {
 } from 'chart.js';
 Chart.register(...registerables);
 
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+);
 
 const StatsPage = () => {
   const [searchParams] = useSearchParams();
@@ -44,9 +52,10 @@ const StatsPage = () => {
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    background: 'linear-gradient(180deg, rgba(255, 165, 0, 0.8), rgba(128, 0, 128, 0.8))',
-    borderRadius: '15px', 
-    boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.25)', 
+    background:
+      'linear-gradient(180deg, rgba(255, 165, 0, 0.8), rgba(128, 0, 128, 0.8))',
+    borderRadius: '15px',
+    boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.25)',
     padding: '20px',
   };
 
@@ -57,15 +66,15 @@ const StatsPage = () => {
       y: {
         beginAtZero: true,
         ticks: {
-          color: '#fff', 
+          color: '#fff',
         },
         grid: {
-          color: 'rgba(255, 255, 255, 0.1)' 
-        }
+          color: 'rgba(255, 255, 255, 0.1)',
+        },
       },
       x: {
         ticks: {
-          color: 'gold', 
+          color: 'gold',
           font: {
             size: 14,
             weight: 'bold' as const,
@@ -73,14 +82,14 @@ const StatsPage = () => {
           textStrokeColor: 'black',
           textStrokeWidth: 3,
         },
-        },
       },
+    },
     plugins: {
       legend: {
         position: 'top' as const,
         labels: {
-          color: '#fff' 
-        }
+          color: '#fff',
+        },
       },
     },
     elements: {
@@ -105,42 +114,57 @@ const StatsPage = () => {
     const [day, month, year] = dateStr.split('.').map(Number);
     return new Date(year, month - 1, day);
   };
-  
-  const processChartData = useCallback((records: ExpenseRecord[] | IncomeRecord[], type: 'expenses' | 'income'): ChartData => {
-    const aggregatedData: { [key: string]: number } = {};
-  
-    records.forEach(record => {
-      const formattedDate = record.date.toLocaleDateString('ru-RU');
-  
-      if (!aggregatedData[formattedDate]) {
-        aggregatedData[formattedDate] = 0;
-      }
-  
-      const amount = type === 'expenses' ? (record as ExpenseRecord).totalExpense : (record as IncomeRecord).totalIncome;
-      aggregatedData[formattedDate] = amount; 
-    });
-  
-    return {
-      labels: Object.keys(aggregatedData).sort(), 
-      datasets: [{
-        label: type === 'expenses' ? 'Расходы' : 'Доходы',
-        data: Object.values(aggregatedData),
-        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-        borderColor: 'rgba(75, 192, 192, 1)',
-        borderWidth: 1,
-      }],
-    };
-  }, []);
+
+  const processChartData = useCallback(
+    (
+      records: ExpenseRecord[] | IncomeRecord[],
+      type: 'expenses' | 'income',
+    ): ChartData => {
+      const aggregatedData: { [key: string]: number } = {};
+
+      records.forEach((record) => {
+        const formattedDate = record.date.toLocaleDateString('ru-RU');
+
+        if (!aggregatedData[formattedDate]) {
+          aggregatedData[formattedDate] = 0;
+        }
+
+        const amount =
+          type === 'expenses'
+            ? (record as ExpenseRecord).totalExpense
+            : (record as IncomeRecord).totalIncome;
+        aggregatedData[formattedDate] = amount;
+      });
+
+      return {
+        labels: Object.keys(aggregatedData).sort(),
+        datasets: [
+          {
+            label: type === 'expenses' ? 'Расходы' : 'Доходы',
+            data: Object.values(aggregatedData),
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1,
+          },
+        ],
+      };
+    },
+    [],
+  );
 
   useEffect(() => {
     const type = searchParams.get('type') || 'expenses';
-    const recordsToProcess = type === 'expenses' ? expenseRecords : incomeRecords;
-    const newChartData = processChartData(recordsToProcess, type as 'expenses' | 'income');
+    const recordsToProcess =
+      type === 'expenses' ? expenseRecords : incomeRecords;
+    const newChartData = processChartData(
+      recordsToProcess,
+      type as 'expenses' | 'income',
+    );
     setChartData(newChartData);
   }, [searchParams, expenseRecords, incomeRecords, processChartData]);
 
   return (
-    <div style={containerStyles}> 
+    <div style={containerStyles}>
       <h1>Статистика за последнюю неделю</h1>
       <Line data={chartData} options={options} />
     </div>
