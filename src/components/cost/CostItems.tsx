@@ -65,12 +65,12 @@ const CostItems: React.FC<CostItemsProps> = ({
     setSubcategoryExpenses({});
   };
 
-  const handleViewWeeklyExpenses = () => {
-    navigate('/stats?type=expenses&period=week');
+  const handleViewWeeklyExpenses = (categoryId: string) => {
+    navigate(`/stats?type=expenses&period=week&categoryId=${categoryId}`);
   };
 
-  const handleViewWeeklyIncome = () => {
-    navigate('/stats?type=income&period=week');
+  const handleViewWeeklyIncome = (categoryId: string) => {
+    navigate(`/stats?type=income&period=week&categoryId=${categoryId}`);
   };
 
   return (
@@ -164,7 +164,7 @@ const CostItems: React.FC<CostItemsProps> = ({
             <div className="expenses-container">
               <div className="expenses-header">
                 Расходы
-                <button onClick={handleViewWeeklyExpenses}>
+                <button onClick={() => handleViewWeeklyExpenses(String(category.id))}>
                   Расходы за неделю
                 </button>
               </div>
@@ -189,7 +189,7 @@ const CostItems: React.FC<CostItemsProps> = ({
             <div className="incomes-container">
               <div className="incomes-header">
                 Доходы
-                <button onClick={handleViewWeeklyIncome}>
+                <button onClick={() => handleViewWeeklyIncome(String(category.id))}>
                   Доходы за неделю
                 </button>
               </div>
