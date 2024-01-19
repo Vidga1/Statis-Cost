@@ -1,5 +1,5 @@
 import React from 'react';
-import './MainPage.css';
+import '../styles/MainPage.css';
 import { useNavigate } from 'react-router-dom';
 import CostItems from '../components/cost/CostItems';
 import useLoadCost from '../hooks/useLoadCost';

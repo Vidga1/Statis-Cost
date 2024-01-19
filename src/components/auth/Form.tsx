@@ -1,6 +1,6 @@
 import React from 'react';
 import { FC, useState } from 'react';
-import './Form.css';
+import '../../styles/Form.css';
 
 const Form: FC<FormProps> = ({ title, handleClick }) => {
   const [email, setEmail] = useState('');

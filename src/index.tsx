@@ -6,7 +6,7 @@ import { PersistGate } from 'redux-persist/integration/react';
 import App from './App';
 import { store, persistor } from './store';
 import './firebase/firebase';
-import './global.css';
+import './styles/global.css';
 
 const rootElement = document.getElementById('root') as HTMLElement;
 const root = ReactDOM.createRoot(rootElement);
