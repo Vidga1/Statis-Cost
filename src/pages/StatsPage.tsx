@@ -32,11 +32,12 @@ const StatsPage = () => {
       },
     ],
   });
+  const [period, setPeriod] = useState<'week' | 'month'>('week');
 
   const containerStyles: React.CSSProperties = {
     height: '600px',
     width: '1800px',
-    marginTop: '30px',
+    marginTop: '80px',
     marginLeft: '40px',
     display: 'flex',
     flexDirection: 'column',
@@ -63,6 +64,7 @@ const StatsPage = () => {
         },
       },
       x: {
+        offset: true,
         ticks: {
           color: 'gold',
           font: {
@@ -71,6 +73,9 @@ const StatsPage = () => {
           },
           textStrokeColor: 'black',
           textStrokeWidth: 3,
+        },
+        afterFit: (scaleInstance: { height: number }) => {
+          scaleInstance.height = scaleInstance.height * 2.2;
         },
       },
     },
@@ -96,32 +101,49 @@ const StatsPage = () => {
   type CategoryRecord = ExpenseRecord | IncomeRecord;
 
   const processChartData = useCallback(
-    (records: CategoryRecord[], type: RecordType, categoryId: string): ChartData => {
+    (
+      records: CategoryRecord[],
+      type: RecordType,
+      categoryId: string,
+    ): ChartDataType => {
       const startDate = new Date();
       startDate.setHours(0, 0, 0, 0); // Установка времени на начало дня
       const endDate = new Date();
-      endDate.setDate(startDate.getDate() + 6);
-      endDate.setHours(0, 0, 0, 0); // Также установка времени на начало дня
-  
+      if (period === 'month') {
+        endDate.setMonth(startDate.getMonth() + 1);
+      } else {
+        endDate.setDate(startDate.getDate() + 6);
+      }
+      endDate.setHours(0, 0, 0, 0);
+
       const aggregatedData: { [key: string]: number } = {};
-  
-      // Инициализация дат для агрегированных данных
-      for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
+
+      for (
+        let d = new Date(startDate);
+        d <= endDate;
+        d.setDate(d.getDate() + 1)
+      ) {
         const dateKey = d.toLocaleDateString('ru-RU');
         aggregatedData[dateKey] = 0;
       }
-  
-      // Фильтрация и агрегация данных
+
       records.forEach((record) => {
         const recordDate = new Date(record.date);
-        recordDate.setHours(0, 0, 0, 0); // Установка времени на начало дня для сравнения
-        if (record.categoryId === categoryId && recordDate >= startDate && recordDate <= endDate) {
+        recordDate.setHours(0, 0, 0, 0);
+        if (
+          record.categoryId === categoryId &&
+          recordDate >= startDate &&
+          recordDate <= endDate
+        ) {
           const dateKey = recordDate.toLocaleDateString('ru-RU');
-          const value = type === 'expenses' ? (record as ExpenseRecord).totalExpense : (record as IncomeRecord).totalIncome;
+          const value =
+            type === 'expenses'
+              ? (record as ExpenseRecord).totalExpense
+              : (record as IncomeRecord).totalIncome;
           aggregatedData[dateKey] += value;
         }
       });
-  
+
       return {
         labels: Object.keys(aggregatedData),
         datasets: [
@@ -135,13 +157,13 @@ const StatsPage = () => {
         ],
       };
     },
-    []
+    [period],
   );
 
   useEffect(() => {
-    const type = searchParams.get('type') as 'expenses' | 'income' || 'expenses';
+    const type =
+      (searchParams.get('type') as 'expenses' | 'income') || 'expenses';
     const categoryId = searchParams.get('categoryId') || '';
-    console.log("CategoryId from Params:", categoryId);
 
     if (!categoryId) {
       setChartData({
@@ -159,14 +181,20 @@ const StatsPage = () => {
       return;
     }
 
-    const recordsToProcess = type === 'expenses' ? expenseRecords : incomeRecords;
+    const recordsToProcess =
+      type === 'expenses' ? expenseRecords : incomeRecords;
     const newChartData = processChartData(recordsToProcess, type, categoryId);
     setChartData(newChartData);
-  }, [searchParams, expenseRecords, incomeRecords, processChartData]);
+  }, [searchParams, expenseRecords, incomeRecords, processChartData, period]);
 
   return (
     <div style={containerStyles}>
-      <h1>Статистика за последнюю неделю</h1>
+      <h1>
+        Статистика за{' '}
+        {period === 'week' ? 'последнюю неделю' : 'последний месяц'}
+      </h1>
+      <button onClick={() => setPeriod('week')}>Неделя</button>
+      <button onClick={() => setPeriod('month')}>Месяц</button>
       <Line data={chartData} options={options} />
     </div>
   );

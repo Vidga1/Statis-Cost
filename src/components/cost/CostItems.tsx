@@ -164,7 +164,9 @@ const CostItems: React.FC<CostItemsProps> = ({
             <div className="expenses-container">
               <div className="expenses-header">
                 Расходы
-                <button onClick={() => handleViewWeeklyExpenses(String(category.id))}>
+                <button
+                  onClick={() => handleViewWeeklyExpenses(String(category.id))}
+                >
                   Расходы за неделю
                 </button>
               </div>
@@ -189,7 +191,9 @@ const CostItems: React.FC<CostItemsProps> = ({
             <div className="incomes-container">
               <div className="incomes-header">
                 Доходы
-                <button onClick={() => handleViewWeeklyIncome(String(category.id))}>
+                <button
+                  onClick={() => handleViewWeeklyIncome(String(category.id))}
+                >
                   Доходы за неделю
                 </button>
               </div>

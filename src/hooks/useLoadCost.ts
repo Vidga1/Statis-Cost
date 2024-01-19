@@ -55,7 +55,7 @@ type UseLoadCostReturnType = {
 };
 
 const useLoadCost = (): UseLoadCostReturnType => {
-  const { id: userId } = useAuth(); 
+  const { id: userId } = useAuth();
   const dispatch = useAppDispatch();
 
   const [categoryExpenses, setCategoryExpenses] = useState<CategoryExpenses>(

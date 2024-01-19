@@ -31,7 +31,7 @@ export const handleDateChange = (
 ) => {
   setCategoryDates((prevDates) => ({
     ...prevDates,
-    [categoryId]: date || new Date(), 
+    [categoryId]: date || new Date(),
   }));
 };
 
@@ -48,7 +48,7 @@ export const calculateTotalExpense = (
 };
 
 export const calculateTotalIncome = (
-  categoryExpenses: CategoryExpenses, 
+  categoryExpenses: CategoryExpenses,
   subcategoryExpenses: SubcategoryExpenses,
   categoryId: string,
 ): number => {
@@ -117,14 +117,14 @@ export const handleRemoveIncome = (
   setIncomeRecords: React.Dispatch<React.SetStateAction<IncomeRecord[]>>,
   incomeRecords: IncomeRecord[],
   recordId: string,
-  userId: string, 
-  saveUserIncomes: (userId: string, incomes: IncomeRecord[]) => Promise<void>, 
+  userId: string,
+  saveUserIncomes: (userId: string, incomes: IncomeRecord[]) => Promise<void>,
 ) => {
   const updatedIncomes = incomeRecords.filter(
     (record) => record.id !== recordId,
   );
   setIncomeRecords(updatedIncomes);
-  saveUserIncomes(userId, updatedIncomes); 
+  saveUserIncomes(userId, updatedIncomes);
 };
 
 export const handleRemoveExpense = (
@@ -138,5 +138,5 @@ export const handleRemoveExpense = (
     (record) => record.id !== recordId,
   );
   setExpenseRecords(updatedExpenses);
-  saveExpenses(userId, updatedExpenses); 
+  saveExpenses(userId, updatedExpenses);
 };
