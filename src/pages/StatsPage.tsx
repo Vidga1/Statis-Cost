@@ -27,6 +27,7 @@ const StatsPage = () => {
     ],
   });
 
+  const [isCustomDateRange, setIsCustomDateRange] = useState(false);
   const [period, setPeriod] = useState<'week' | 'month'>('week');
   const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([
     null,
@@ -52,13 +53,13 @@ const StatsPage = () => {
           },
         ],
       });
+      setIsCustomDateRange(false);
       return;
     }
 
     const recordsToProcess =
       type === 'expenses' ? expenseRecords : incomeRecords;
 
-    // Проверяем, выбран ли диапазон дат с DatePicker
     if (startDate && endDate) {
       const newChartData = DateRange(
         recordsToProcess,
@@ -68,8 +69,8 @@ const StatsPage = () => {
         endDate,
       );
       setChartData(newChartData);
+      setIsCustomDateRange(true);
     } else {
-      // Использовать processChartData для периода "неделя" или "месяц"
       const newChartData = processChartData(
         recordsToProcess,
         type,
@@ -77,6 +78,7 @@ const StatsPage = () => {
         period,
       );
       setChartData(newChartData);
+      setIsCustomDateRange(false);
     }
   }, [searchParams, expenseRecords, incomeRecords, startDate, endDate, period]);
 
@@ -89,31 +91,50 @@ const StatsPage = () => {
           justifyContent: 'flex-start',
         }}
       >
-        <div style={{ marginRight: '1300px' }}>
-          {' '}
-          {/* Отступ для DatePicker */}
-          <DatePicker
-            placeholderText="Выбрать свой период"
-            selectsRange={true}
-            startDate={startDate}
-            endDate={endDate}
-            onChange={(update) => {
-              setDateRange(update as [Date | null, Date | null]);
-            }}
-          />
-        </div>
+        <DatePicker
+          placeholderText="Выбрать свой период"
+          selectsRange={true}
+          startDate={startDate}
+          endDate={endDate}
+          onChange={(update) => {
+            setDateRange(update as [Date | null, Date | null]);
+          }}
+        />
+        <button
+          onClick={() => {
+            setDateRange([null, null]);
+            setIsCustomDateRange(false);
+          }}
+          style={{ marginLeft: '10px' }}
+        >
+          Сброс
+        </button>
       </div>
 
       <h1 style={{ textAlign: 'center' }}>
-        {' '}
-        {/* Выравнивание заголовка по центру */}
-        Статистика за{' '}
-        {period === 'week' ? 'последнюю неделю' : 'последний месяц'}
+        {isCustomDateRange
+          ? 'Статистика за выбранный период'
+          : 'Статистика за ' +
+            (period === 'week' ? 'последнюю неделю' : 'последний месяц')}
       </h1>
 
       <div style={{ display: 'flex', justifyContent: 'center' }}>
-        <button onClick={() => setPeriod('week')}>Неделя</button>
-        <button onClick={() => setPeriod('month')}>Месяц</button>
+        <button
+          onClick={() => {
+            setPeriod('week');
+            setIsCustomDateRange(false);
+          }}
+        >
+          Неделя
+        </button>
+        <button
+          onClick={() => {
+            setPeriod('month');
+            setIsCustomDateRange(false);
+          }}
+        >
+          Месяц
+        </button>
       </div>
 
       <Line data={chartData} options={options} />
