@@ -111,3 +111,18 @@ interface ChartData {
     borderWidth: number;
   }>;
 }
+
+type ChartDataType = {
+  labels: string[];
+  datasets: {
+    label: string;
+    data: number[];
+    backgroundColor: string;
+    borderColor: string;
+    borderWidth: number;
+  }[];
+};
+
+type RecordType = 'expenses' | 'income';
+
+type CategoryRecord = ExpenseRecord | IncomeRecord;
