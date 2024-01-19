@@ -94,12 +94,12 @@ const StatsPage = () => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'flex-start',
-          marginRight: '1400px' 
+          marginRight: '1400px',
         }}
       >
-           <button className="backButton" onClick={BackButton}>
-        Выйти из статистики
-      </button>
+        <button className="backButton" onClick={BackButton}>
+          Выйти из статистики
+        </button>
         <DatePicker
           placeholderText="Выбрать свой период"
           selectsRange={true}
@@ -119,13 +119,14 @@ const StatsPage = () => {
           Сброс
         </button>
       </div>
-  
+
       <h1 style={{ textAlign: 'center' }}>
         {isCustomDateRange
           ? 'Статистика за выбранный период'
-          : 'Статистика за ' + (period === 'week' ? 'последнюю неделю' : 'последний месяц')}
+          : 'Статистика за ' +
+            (period === 'week' ? 'последнюю неделю' : 'последний месяц')}
       </h1>
-  
+
       <div style={{ display: 'flex', justifyContent: 'center' }}>
         <button
           onClick={() => {
@@ -144,7 +145,7 @@ const StatsPage = () => {
           Месяц
         </button>
       </div>
-  
+
       <Line data={chartData} options={options} />
     </div>
   );
