@@ -1,18 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import CategoryForm from './CategoryForm';
 import SubcategoryList from './SubcategoryList';
-import {
-  loadUserCategories,
-  saveUserCategories,
-} from '../../firebase/firebaseService';
+import { loadUserCategories, saveUserCategories } from '../../firebase/firebaseService';
 import { debounce } from 'lodash';
 
-const CategoryManager: React.FC<CategoryManagerProps> = ({
-  userId,
-  onCategoriesChange,
-}) => {
+const CategoryManager: React.FC<CategoryManagerProps> = ({ userId, onCategoriesChange }) => {
   const [categories, setCategories] = useState<Category[]>([]);
-  const [editingCategory, setEditingCategory] = useState<Category | null>(null);
+  const [editingCategoryId, setEditingCategoryId] = useState<number | null>(null);
+  const [editingCategoryName, setEditingCategoryName] = useState('');
 
   const debouncedSaveCategoriesRef = useRef(
     debounce((categories: Category[]) => {
@@ -36,7 +30,7 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({
     if (categories.length > 0) {
       debouncedSaveCategoriesRef.current(categories);
     }
-  }, [categories, userId]);
+  }, [categories]);
 
   const updateCategories = (newCategories: Category[]) => {
     setCategories(newCategories);
@@ -53,14 +47,13 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({
     updateCategories([...categories, newCategory]);
   };
 
-  const handleEditCategory = (categoryName: string) => {
-    if (editingCategory) {
-      const updatedCategories = categories.map((cat) =>
-        cat.id === editingCategory.id ? { ...cat, name: categoryName } : cat,
-      );
-      updateCategories(updatedCategories);
-      setEditingCategory(null);
-    }
+  const handleEditCategory = (categoryId: number) => {
+    const updatedCategories = categories.map((cat) =>
+      cat.id === categoryId ? { ...cat, name: editingCategoryName } : cat,
+    );
+    updateCategories(updatedCategories);
+    setEditingCategoryId(null);
+    setEditingCategoryName('');
   };
 
   const handleDeleteCategory = (categoryId: number) => {
@@ -125,21 +118,44 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({
 
   return (
     <div>
-      <CategoryForm
-        onSubmit={editingCategory ? handleEditCategory : handleAddCategory}
-        initialCategory={editingCategory ? editingCategory.name : ''}
+    <div className="add-category-container">
+      <input
+        type="text"
+        className="add-category-input"
+        placeholder="Добавить категорию"
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' && e.currentTarget.value.trim() !== '') {
+            handleAddCategory(e.currentTarget.value);
+            e.currentTarget.value = '';
+          }
+        }}
       />
+    </div>
       {categories.map((category) => (
         <div key={category.id} className="category-block">
-          <div className="category-name">
-            {category.name}
-            <button onClick={() => setEditingCategory(category)}>
-              Редактировать
-            </button>
-            <button onClick={() => handleDeleteCategory(category.id)}>
-              Удалить
-            </button>
-          </div>
+          {editingCategoryId === category.id ? (
+            <input
+              type="text"
+              value={editingCategoryName}
+              onChange={(e) => setEditingCategoryName(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') handleEditCategory(category.id);
+              }}
+            />
+          ) : (
+            <>
+              <span className="category-name">{category.name}</span>
+              <button onClick={() => {
+                setEditingCategoryId(category.id);
+                setEditingCategoryName(category.name);
+              }}>
+                Изменить
+              </button>
+              <button onClick={() => handleDeleteCategory(category.id)}>
+                Удалить
+              </button>
+            </>
+          )}
           <SubcategoryList
             subcategories={category.subcategories}
             onAddSubcategory={(name) => handleAddSubcategory(category.id, name)}

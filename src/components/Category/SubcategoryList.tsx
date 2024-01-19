@@ -54,7 +54,7 @@ const SubcategoryList: React.FC<SubcategoryListProps> = ({
                   setEditingName(subcat.name);
                 }}
               >
-                Редактировать
+                Изменить
               </button>
               <button onClick={() => onDeleteSubcategory(subcat.id)}>
                 Удалить
