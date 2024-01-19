@@ -3,7 +3,8 @@ import { useSearchParams } from 'react-router-dom';
 import useLoadCost from '../hooks/useLoadCost';
 import { Chart as ChartJS, registerables } from 'chart.js';
 import { Line } from 'react-chartjs-2';
-import {options, containerStyles } from '../components/statis/statCss'
+import { options, containerStyles } from '../components/statis/statCss';
+import { processChartData } from '../components/statis/processChartData';
 
 ChartJS.register(...registerables);
 
@@ -23,66 +24,6 @@ const StatsPage = () => {
     ],
   });
   const [period, setPeriod] = useState<'week' | 'month'>('week');
-
-  const processChartData = useCallback(
-    (
-      records: CategoryRecord[],
-      type: RecordType,
-      categoryId: string,
-    ): ChartDataType => {
-      const startDate = new Date();
-      startDate.setHours(0, 0, 0, 0); 
-      const endDate = new Date();
-      if (period === 'month') {
-        endDate.setMonth(startDate.getMonth() + 1);
-      } else {
-        endDate.setDate(startDate.getDate() + 6);
-      }
-      endDate.setHours(0, 0, 0, 0);
-
-      const aggregatedData: { [key: string]: number } = {};
-
-      for (
-        let d = new Date(startDate);
-        d <= endDate;
-        d.setDate(d.getDate() + 1)
-      ) {
-        const dateKey = d.toLocaleDateString('ru-RU');
-        aggregatedData[dateKey] = 0;
-      }
-
-      records.forEach((record) => {
-        const recordDate = new Date(record.date);
-        recordDate.setHours(0, 0, 0, 0);
-        if (
-          record.categoryId === categoryId &&
-          recordDate >= startDate &&
-          recordDate <= endDate
-        ) {
-          const dateKey = recordDate.toLocaleDateString('ru-RU');
-          const value =
-            type === 'expenses'
-              ? (record as ExpenseRecord).totalExpense
-              : (record as IncomeRecord).totalIncome;
-          aggregatedData[dateKey] += value;
-        }
-      });
-
-      return {
-        labels: Object.keys(aggregatedData),
-        datasets: [
-          {
-            label: type === 'expenses' ? 'Расходы' : 'Доходы',
-            data: Object.values(aggregatedData),
-            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-            borderColor: 'rgba(75, 192, 192, 1)',
-            borderWidth: 1,
-          },
-        ],
-      };
-    },
-    [period],
-  );
 
   useEffect(() => {
     const type =
@@ -107,9 +48,14 @@ const StatsPage = () => {
 
     const recordsToProcess =
       type === 'expenses' ? expenseRecords : incomeRecords;
-    const newChartData = processChartData(recordsToProcess, type, categoryId);
+    const newChartData = processChartData(
+      recordsToProcess,
+      type,
+      categoryId,
+      period,
+    );
     setChartData(newChartData);
-  }, [searchParams, expenseRecords, incomeRecords, processChartData, period]);
+  }, [searchParams, expenseRecords, incomeRecords, period]);
 
   return (
     <div style={containerStyles}>
