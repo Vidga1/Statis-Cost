@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import useLoadCost from '../hooks/useLoadCost';
+import { useNavigate } from 'react-router-dom';
 import { Chart as ChartJS, registerables } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import DatePicker from 'react-datepicker';
@@ -12,6 +13,10 @@ import { DateRange } from '../components/statis/DateRange';
 ChartJS.register(...registerables);
 
 const StatsPage = () => {
+  const navigate = useNavigate();
+  const BackButton = () => {
+    navigate('/main');
+  };
   const [searchParams] = useSearchParams();
   const { expenseRecords, incomeRecords } = useLoadCost();
   const [chartData, setChartData] = useState<ChartDataType>({
@@ -89,8 +94,12 @@ const StatsPage = () => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'flex-start',
+          marginRight: '1400px' 
         }}
       >
+           <button className="backButton" onClick={BackButton}>
+        Выйти из статистики
+      </button>
         <DatePicker
           placeholderText="Выбрать свой период"
           selectsRange={true}
@@ -110,14 +119,13 @@ const StatsPage = () => {
           Сброс
         </button>
       </div>
-
+  
       <h1 style={{ textAlign: 'center' }}>
         {isCustomDateRange
           ? 'Статистика за выбранный период'
-          : 'Статистика за ' +
-            (period === 'week' ? 'последнюю неделю' : 'последний месяц')}
+          : 'Статистика за ' + (period === 'week' ? 'последнюю неделю' : 'последний месяц')}
       </h1>
-
+  
       <div style={{ display: 'flex', justifyContent: 'center' }}>
         <button
           onClick={() => {
@@ -136,7 +144,7 @@ const StatsPage = () => {
           Месяц
         </button>
       </div>
-
+  
       <Line data={chartData} options={options} />
     </div>
   );
