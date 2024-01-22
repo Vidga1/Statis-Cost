@@ -2,6 +2,11 @@ import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { firestore } from './firebase';
 
 export const saveUserData = async (userData: UserData): Promise<void> => {
+  if (!userData.email || !userData.token || !userData.id) {
+    console.error('Неполные данные пользователя');
+    return;
+  }
+
   try {
     const userRef = doc(firestore, 'users', userData.id);
     await setDoc(userRef, userData);
@@ -75,7 +80,6 @@ export const saveUserExpenses = async (
   try {
     const formattedExpenses = expenses.map((expense) => {
       if (!(expense.date instanceof Date) || isNaN(expense.date.getTime())) {
-        console.error('Недействительная дата в расходах:', expense);
         throw new RangeError('Invalid date value');
       }
       return {
@@ -123,7 +127,6 @@ export const saveUserIncomes = async (
   try {
     const formattedIncomes = incomes.map((income) => {
       if (!(income.date instanceof Date) || isNaN(income.date.getTime())) {
-        console.error('Недействительная дата в доходах:', income);
         throw new RangeError('Invalid date value');
       }
       return {

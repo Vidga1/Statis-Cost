@@ -10,7 +10,7 @@ const config: Config = {
       branches: 60,
       functions: 60,
       lines: 60,
-      statements: -20,
+      statements: 60,
     },
   },
   moduleFileExtensions: [
@@ -29,6 +29,7 @@ const config: Config = {
     '\\.(css|scss|less)$': '<rootDir>/__mocks__/styleMock.js',
   },
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
+  setupFiles: ['jest-canvas-mock'],
   testEnvironment: 'jsdom',
   verbose: true,
 };

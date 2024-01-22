@@ -6,7 +6,7 @@ import { persistReducer, persistStore } from 'redux-persist';
 import userReducer from './slices/userSlice';
 import categoriesReducer from './slices/categoriesSlice';
 
-const rootReducer = combineReducers({
+export const rootReducer = combineReducers({
   user: userReducer,
   categories: categoriesReducer,
 });

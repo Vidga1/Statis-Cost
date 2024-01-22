@@ -126,3 +126,46 @@ type ChartDataType = {
 type RecordType = 'expenses' | 'income';
 
 type CategoryRecord = ExpenseRecord | IncomeRecord;
+
+interface User {
+  email: string;
+  token: string;
+  id: string;
+}
+
+interface PersistedState {
+  _persist: {
+    version: number;
+    rehydrated: boolean;
+  };
+}
+
+interface UseLoadCostReturnType {
+  userId: string | null;
+  categories: Category[];
+  categoryExpenses: Record<string, number>;
+  setCategoryExpenses: React.Dispatch<
+    React.SetStateAction<Record<string, number>>
+  >;
+  subcategoryExpenses: Record<string, number>;
+  setSubcategoryExpenses: React.Dispatch<
+    React.SetStateAction<Record<string, number>>
+  >;
+  categoryDates: Record<string, Date | null>;
+  setCategoryDates: React.Dispatch<
+    React.SetStateAction<Record<string, Date | null>>
+  >;
+  expenseRecords: ExpenseRecord[];
+  setExpenseRecords: React.Dispatch<React.SetStateAction<ExpenseRecord[]>>;
+  incomeRecords: IncomeRecord[];
+  setIncomeRecords: React.Dispatch<React.SetStateAction<IncomeRecord[]>>;
+  saveUserExpenses: (
+    userId: string,
+    expenses: ExpenseRecord[],
+  ) => Promise<void>;
+  saveUserIncomes: (userId: string, incomes: IncomeRecord[]) => Promise<void>;
+}
+
+interface MockedUseLoadCostModule {
+  useLoadCost: jest.Mock<UseLoadCostReturnType>;
+}

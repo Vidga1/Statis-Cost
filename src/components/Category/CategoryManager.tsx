@@ -1,11 +1,19 @@
 import React, { useState, useEffect, useRef } from 'react';
 import SubcategoryList from './SubcategoryList';
-import { loadUserCategories, saveUserCategories } from '../../firebase/firebaseService';
+import {
+  loadUserCategories,
+  saveUserCategories,
+} from '../../firebase/firebaseService';
 import { debounce } from 'lodash';
 
-const CategoryManager: React.FC<CategoryManagerProps> = ({ userId, onCategoriesChange }) => {
+const CategoryManager: React.FC<CategoryManagerProps> = ({
+  userId,
+  onCategoriesChange,
+}) => {
   const [categories, setCategories] = useState<Category[]>([]);
-  const [editingCategoryId, setEditingCategoryId] = useState<number | null>(null);
+  const [editingCategoryId, setEditingCategoryId] = useState<number | null>(
+    null,
+  );
   const [editingCategoryName, setEditingCategoryName] = useState('');
 
   const debouncedSaveCategoriesRef = useRef(
@@ -118,19 +126,19 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({ userId, onCategoriesC
 
   return (
     <div>
-    <div className="add-category-container">
-      <input
-        type="text"
-        className="add-category-input"
-        placeholder="Добавить категорию"
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' && e.currentTarget.value.trim() !== '') {
-            handleAddCategory(e.currentTarget.value);
-            e.currentTarget.value = '';
-          }
-        }}
-      />
-    </div>
+      <div className="add-category-container">
+        <input
+          type="text"
+          className="add-category-input"
+          placeholder="Добавить категорию"
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' && e.currentTarget.value.trim() !== '') {
+              handleAddCategory(e.currentTarget.value);
+              e.currentTarget.value = '';
+            }
+          }}
+        />
+      </div>
       {categories.map((category) => (
         <div key={category.id} className="category-block">
           {editingCategoryId === category.id ? (
@@ -145,10 +153,12 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({ userId, onCategoriesC
           ) : (
             <>
               <span className="category-name">{category.name}</span>
-              <button onClick={() => {
-                setEditingCategoryId(category.id);
-                setEditingCategoryName(category.name);
-              }}>
+              <button
+                onClick={() => {
+                  setEditingCategoryId(category.id);
+                  setEditingCategoryName(category.name);
+                }}
+              >
                 Изменить
               </button>
               <button onClick={() => handleDeleteCategory(category.id)}>
