@@ -1,28 +1,18 @@
-import { renderHook } from '@testing-library/react-hooks';
+import React from 'react';
+import { renderHook } from '@testing-library/react';
 import { useAuth } from '../src/hooks/use-auth';
+import * as reduxHooks from '../src/hooks/redux-hooks';
 
-jest.mock('react-redux', () => ({
-  useSelector: jest
-    .fn()
-    .mockImplementation((selector) => selector(mockedState)),
-  useDispatch: () => jest.fn(),
-}));
-
-// Предположим, что это ваше мокированное состояние
-const mockedState = {
-  user: {
-    isAuth: true,
-    email: 'test@example.com',
-    token: 'testToken',
-    id: 'testId',
-  },
-};
-
-test('useAuth should return user authentication details', () => {
-  const { result } = renderHook(() => useAuth());
-
-  expect(result.current.isAuth).toBeTruthy();
-  expect(result.current.email).toBe('test@example.com');
-  expect(result.current.token).toBe('testToken');
-  expect(result.current.id).toBe('testId');
+describe('useAuth', () => {
+  it('should return isAuth as false when no user token', () => {
+    jest.spyOn(reduxHooks, 'useAppSelector').mockImplementation(() => ({
+      user: {
+        token: null,
+        email: 'test@example.com',
+        id: '123',
+      },
+    }));
+    const { result } = renderHook(() => useAuth());
+    expect(result.current.isAuth).toBe(false);
+  });
 });

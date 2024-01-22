@@ -169,3 +169,7 @@ interface UseLoadCostReturnType {
 interface MockedUseLoadCostModule {
   useLoadCost: jest.Mock<UseLoadCostReturnType>;
 }
+
+interface CategoriesProviderProps {
+  children: ReactNode;
+}

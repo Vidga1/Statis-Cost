@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, ReactNode } from 'react';
+import React, { createContext, useState, useContext } from 'react';
 
 const defaultState: CategoriesContextType = {
   categories: [],
@@ -9,10 +9,6 @@ export const CategoriesContext =
   createContext<CategoriesContextType>(defaultState);
 
 export const useCategoriesContext = () => useContext(CategoriesContext);
-
-interface CategoriesProviderProps {
-  children: ReactNode;
-}
 
 export const CategoriesProvider: React.FC<CategoriesProviderProps> = ({
   children,

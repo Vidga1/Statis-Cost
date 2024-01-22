@@ -4,7 +4,7 @@ import '@testing-library/jest-dom';
 import StatsPage from '../src/pages/StatsPage';
 import useLoadCost from '../src/hooks/useLoadCost';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import '../src/__mocks__/ResizeObserver';
+import '../__mocks__/ResizeObserver';
 
 const mockedUseLoadCost = jest.fn();
 const mockedUseSearchParams = jest.fn();

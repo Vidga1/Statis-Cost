@@ -31,26 +31,18 @@ module.exports = {
     compress: true,
     port: 9000,
     hot: true,
-    /* allowedHosts: "all", */
   },
   plugins: [
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, './src/index.html'),
     }),
-    ...(isDev
-      ? [new MiniCssExtractPlugin()]
-      : [
-          new MiniCssExtractPlugin({
-            chunkFilename: '[name].[contenthash].css',
-            filename: '[name].[contenthash].css',
-          }),
-        ]),
     new CleanWebpackPlugin(),
     new MiniCssExtractPlugin({
-      filename: '[name].[hash].css',
+      filename: isDev ? '[name].css' : '[name].[contenthash].css',
+      chunkFilename: isDev ? '[id].css' : '[id].[contenthash].css',
     }),
-    new FaviconsWebpackPlugin('public/favicon.png'),
-    new webpack.HotModuleReplacementPlugin(),
+    new FaviconsWebpackPlugin('src/assets/img/favicon.png'),
+    ...(isDev ? [new webpack.HotModuleReplacementPlugin()] : []),
   ],
   module: {
     rules: [
