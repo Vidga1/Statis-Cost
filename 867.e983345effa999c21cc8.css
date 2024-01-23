@@ -1,0 +1,98 @@
+.SettingPage-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.SettingPage-header {
+  display: flex;
+  align-items: center;
+  width: auto;
+  padding: 10px 0;
+  font-size: 22px;
+}
+
+.add-category-input {
+  margin-left: 250px;
+  padding: 10px;
+  font-size: 16px;
+  width: 400px;
+}
+
+input,
+button {
+  padding: 10px;
+  margin: 5px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+}
+
+input {
+  width: 40%;
+  min-width: 200px;
+}
+
+button {
+  cursor: pointer;
+  background-color: #4caf50;
+  color: white;
+}
+
+button.logoutButton {
+  background-color: #f44336;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+label {
+  color: #04045c;
+  font-size: 18px;
+}
+
+.category-block {
+  border: 2px solid #bd1010;
+  padding: 10px;
+  margin-top: 10px;
+  margin-bottom: 5px;
+  text-align: center;
+  background-image: linear-gradient(to right, #ddffbc, #04befe);
+}
+
+.category-name {
+  font-size: 25px;
+  font-weight: bold;
+  color: purple;
+}
+
+.subcategory-name {
+  font-size: 20px;
+  color: blue;
+}
+
+.beginCalculationButton {
+  padding: 10px 20px;
+  margin-left: 350px;
+  background-color: #9c2305;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition:
+    background-color 0.3s,
+    transform 0.2s;
+}
+
+.beginCalculationButton:hover {
+  background-color: #6045a0;
+  transform: translateY(-2px);
+}
+
+.beginCalculationButton:active {
+  transform: translateY(1px);
+}
+
