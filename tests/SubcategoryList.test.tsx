@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react';
-import SubcategoryList from '../src/components/category/SubcategoryList';
+import SubcategoryList from '../src/components/Category/SubcategoryList';
 
 describe('SubcategoryList', () => {
   const mockSubcategories = [

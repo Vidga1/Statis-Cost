@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react';
-import CategoryManager from '../src/components/category/CategoryManager';
+import CategoryManager from '../src/components/Category/CategoryManager';
 
 // Мокирование модуля firebaseService
 jest.mock('../src/firebase/firebaseService');

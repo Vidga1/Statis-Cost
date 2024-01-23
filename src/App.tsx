@@ -1,6 +1,5 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-import { CategoriesProvider } from './components/category/CategoriesContext';
 import MainPage from './pages/MainPage';
 import HomePage from './pages/HomePage';
 import AboutPage from './pages/AboutPage';
@@ -11,7 +10,7 @@ import StatsPage from './pages/StatsPage';
 
 function App() {
   return (
-    <CategoriesProvider>
+    <div>
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/about" element={<AboutPage />} />
@@ -21,8 +20,7 @@ function App() {
         <Route path="/main" element={<MainPage />} />
         <Route path="/stats" element={<StatsPage />} />
       </Routes>
-    </CategoriesProvider>
+    </div>
   );
 }
-
 export default App;

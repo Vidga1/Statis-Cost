@@ -1,17 +1,16 @@
 import { useEffect, useState } from 'react';
-import { useAuth } from './use-auth'; // Импорт вашего хука аутентификации
-import { useAppDispatch, useAppSelector } from './redux-hooks'; // Импорт Redux хуков
+import { useAuth } from './use-auth';
+import { useAppDispatch, useAppSelector } from './redux-hooks';
 import {
   loadUserCategories,
   loadUserExpenses,
   loadUserIncomes,
   saveUserExpenses,
   saveUserIncomes,
-} from '../firebase/firebaseService'; // Импорт Firebase сервисов
+} from '../firebase/firebaseService';
 import { setCategoriesForUser } from '../store/slices/categoriesSlice';
 import { v4 as uuidv4 } from 'uuid';
 
-// Определение типов
 type CategoryExpenses = { [key: string]: number };
 type SubcategoryExpenses = { [key: string]: number };
 type CategoryDates = { [key: string]: Date | null };
