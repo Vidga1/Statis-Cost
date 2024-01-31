@@ -1,31 +1,21 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import { Form } from './Form';
-import { setUser } from '../../store/slices/userSlice';
 import { useAppDispatch } from '../../hooks/redux-hooks';
+import { useNavigate } from 'react-router-dom';
+import { login } from '../../firebase/authorization';
 
 const Login = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const handleLogin = (email: string, password: string) => {
-    const auth = getAuth();
-    signInWithEmailAndPassword(auth, email, password)
-      .then(({ user }) => {
-        dispatch(
-          setUser({
-            email: user.email || '',
-            id: user.uid,
-            token: user.refreshToken,
-          }),
-        );
-        navigate('/settings');
-      })
-      .catch(() => alert('Invalid user!'));
-  };
-
-  return <Form title="sign in" handleClick={handleLogin} />;
+  return (
+    <Form
+      title="sign in"
+      handleClick={(email, password) =>
+        login(email, password, dispatch, navigate)
+      }
+    />
+  );
 };
 
 export { Login };
