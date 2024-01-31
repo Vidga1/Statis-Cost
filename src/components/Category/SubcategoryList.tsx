@@ -6,19 +6,18 @@ const SubcategoryList: React.FC<SubcategoryListProps> = ({
   onEditSubcategory,
   onDeleteSubcategory,
 }) => {
-  const [editingSubcategoryId, setEditingSubcategoryId] = useState<
-    number | null
-  >(null);
-  const [editingName, setEditingName] = useState('');
+  const [editingSubcategory, setEditingSubcategory] = useState<{
+    id: number | null;
+    name: string;
+  }>({ id: null, name: '' });
 
   const handleEditSubcategory = (
     e: React.KeyboardEvent,
     subcategoryId: number,
   ) => {
     if (e.key === 'Enter') {
-      onEditSubcategory(subcategoryId, editingName);
-      setEditingSubcategoryId(null);
-      setEditingName('');
+      onEditSubcategory(subcategoryId, editingSubcategory.name);
+      setEditingSubcategory({ id: null, name: '' });
     }
   };
 
@@ -38,11 +37,16 @@ const SubcategoryList: React.FC<SubcategoryListProps> = ({
       )}
       {subcategories.map((subcat) => (
         <div key={subcat.id}>
-          {editingSubcategoryId === subcat.id ? (
+          {editingSubcategory.id === subcat.id ? (
             <input
               type="text"
-              value={editingName}
-              onChange={(e) => setEditingName(e.target.value)}
+              value={editingSubcategory.name}
+              onChange={(e) =>
+                setEditingSubcategory({
+                  ...editingSubcategory,
+                  name: e.target.value,
+                })
+              }
               onKeyDown={(e) => handleEditSubcategory(e, subcat.id)}
             />
           ) : (
@@ -50,8 +54,7 @@ const SubcategoryList: React.FC<SubcategoryListProps> = ({
               <span className="subcategory-name">{subcat.name}</span>
               <button
                 onClick={() => {
-                  setEditingSubcategoryId(subcat.id);
-                  setEditingName(subcat.name);
+                  setEditingSubcategory({ id: subcat.id, name: subcat.name });
                 }}
               >
                 Изменить

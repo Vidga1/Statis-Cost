@@ -11,10 +11,10 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({
   onCategoriesChange,
 }) => {
   const [categories, setCategories] = useState<Category[]>([]);
-  const [editingCategoryId, setEditingCategoryId] = useState<number | null>(
-    null,
-  );
-  const [editingCategoryName, setEditingCategoryName] = useState('');
+  const [editingCategory, setEditingCategory] = useState<{
+    id: number | null;
+    name: string;
+  }>({ id: null, name: '' });
 
   const debouncedSaveCategoriesRef = useRef(
     debounce((categories: Category[]) => {
@@ -57,11 +57,10 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({
 
   const handleEditCategory = (categoryId: number) => {
     const updatedCategories = categories.map((cat) =>
-      cat.id === categoryId ? { ...cat, name: editingCategoryName } : cat,
+      cat.id === categoryId ? { ...cat, name: editingCategory.name } : cat,
     );
     updateCategories(updatedCategories);
-    setEditingCategoryId(null);
-    setEditingCategoryName('');
+    setEditingCategory({ id: null, name: '' });
   };
 
   const handleDeleteCategory = (categoryId: number) => {
@@ -141,11 +140,13 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({
       </div>
       {categories.map((category) => (
         <div key={category.id} className="category-block">
-          {editingCategoryId === category.id ? (
+          {editingCategory.id === category.id ? (
             <input
               type="text"
-              value={editingCategoryName}
-              onChange={(e) => setEditingCategoryName(e.target.value)}
+              value={editingCategory.name}
+              onChange={(e) =>
+                setEditingCategory({ ...editingCategory, name: e.target.value })
+              }
               onKeyDown={(e) => {
                 if (e.key === 'Enter') handleEditCategory(category.id);
               }}
@@ -155,8 +156,7 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({
               <span className="category-name">{category.name}</span>
               <button
                 onClick={() => {
-                  setEditingCategoryId(category.id);
-                  setEditingCategoryName(category.name);
+                  setEditingCategory({ id: category.id, name: category.name });
                 }}
               >
                 Изменить
