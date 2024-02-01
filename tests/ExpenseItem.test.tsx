@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
-import ExpenseItem from '../src/components/cost/ExpenseItem';
+import ExpenseItem from '../src/helpers/ExpenseItem';
 
 describe('ExpenseItem', () => {
   it('отображает информацию о расходах и реагирует на удаление', () => {

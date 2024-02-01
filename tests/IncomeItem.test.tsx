@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
-import IncomeItem from '../src/components/cost/IncomeItem';
+import IncomeItem from '../src/helpers/IncomeItem';
 
 describe('IncomeItem', () => {
   it('отображает информацию о доходах и реагирует на удаление', () => {

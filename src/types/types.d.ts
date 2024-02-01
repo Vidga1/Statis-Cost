@@ -173,3 +173,29 @@ interface MockedUseLoadCostModule {
 interface CategoriesProviderProps {
   children: ReactNode;
 }
+
+type CostItemsProps = {
+  categories: Category[];
+  categoryExpenses: Record<string, number>;
+  subcategoryExpenses: Record<string, number>;
+  categoryDates: Record<string, Date | null>;
+  expenseRecords: ExpenseRecord[];
+  incomeRecords: IncomeRecord[];
+  setCategoryExpenses: React.Dispatch<
+    React.SetStateAction<Record<string, number>>
+  >;
+  setSubcategoryExpenses: React.Dispatch<
+    React.SetStateAction<Record<string, number>>
+  >;
+  setCategoryDates: React.Dispatch<
+    React.SetStateAction<Record<string, Date | null>>
+  >;
+  setExpenseRecords: React.Dispatch<React.SetStateAction<ExpenseRecord[]>>;
+  setIncomeRecords: React.Dispatch<React.SetStateAction<IncomeRecord[]>>;
+  userId: string;
+  saveUserExpenses: (
+    userId: string,
+    expenses: ExpenseRecord[],
+  ) => Promise<void>;
+  saveUserIncomes: (userId: string, incomes: IncomeRecord[]) => Promise<void>;
+};
